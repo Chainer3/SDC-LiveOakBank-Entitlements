@@ -2,7 +2,7 @@ import boto3
 import json
 
 # define the DynamoDB table that Lambda will connect to
-tableName = "lambda-apigateway"
+tableName = "lambda-bank-data"
 
 # create the DynamoDB resource
 dynamo = boto3.resource('dynamodb').Table(tableName)
@@ -22,7 +22,7 @@ def handler(event, context):
         dynamo.put_item(**x)
 
     def ddb_read(x):
-        dynamo.get_item(**x)
+        return dynamo.get_item(**x)
 
     def ddb_update(x):
         dynamo.update_item(**x)
@@ -33,6 +33,14 @@ def handler(event, context):
     def echo(x):
         return x
 
+    def transfer(x):
+        source = x['source']
+        dest = x['source']
+
+        source_balance = dynamo.read(source)
+        dest_balance = dynamo.read(dest)
+        return (source_balance, dest_balance)
+
     operation = event['operation']
 
     operations = {
@@ -41,6 +49,7 @@ def handler(event, context):
         'update': ddb_update,
         'delete': ddb_delete,
         'echo': echo,
+        'transfer': transfer
     }
 
     if operation in operations:
