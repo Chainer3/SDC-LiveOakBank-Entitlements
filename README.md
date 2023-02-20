@@ -1,4 +1,5 @@
 ### Deploy instructions
+Get new CLI credentials from access portal.
 
 #### Create new lambda from CLI
 ```bash

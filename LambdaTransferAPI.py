@@ -19,6 +19,8 @@ def handler(event, context):
     - payload: a JSON object containing parameters to pass to the
                operation being performed
     """
+    print(f"received event {event}")
+    print(f"context {context}")
 
     # define the functions used to perform the CRUD operations
     def ddb_create(x):
@@ -33,19 +35,40 @@ def handler(event, context):
     def ddb_delete(x):
         return dynamo.delete_item(**x)
 
-    def echo(x):
-        return x
+    def account_create(payload, _params):
+        """PUT /accounts 
+        {accountId: 12, balance: 500}"""
+        req = {"Item": {}}
+        new_account = req["Item"]
+        new_account["id"] = payload["accountId"]
+        new_account["balance"] = payload["balance"]
+        ddb_create(req)
+    
+    def account_delete(_payload, params):
+        """DELETE /accounts?accountId=22"""
+        req = {"Key": {}}
+        key = req["Key"]
+        key["id"] = params["querystring"]["accountId"]
+        return ddb_delete(req)
 
-    def add(x):
-        amount = x["amount"]
-        key_id = x["id"]
+
+    def account_read(_payload, params):
+        """GET /accounts?accountId=22"""
+        req = {"Key": {}}
+        key = req["Key"]
+        key["id"] = params["querystring"]["accountId"]
+        return ddb_read(req)
+
+    def deposit(payload, _params):
+        amount = payload["amount"]
+        key_id = payload["accountId"]
 
         return add_balance(key_id, amount)
 
-    def transfer(x):
-        source = x["source_id"]
-        dest = x["dest_id"]
-        amount = x["amount"]
+    def transfer(payload, _params):
+        source = payload["sourceId"]
+        dest = payload["destId"]
+        amount = payload["amount"]
 
         source_balance = get_balance(source)
         dest_balance = get_balance(dest)
@@ -54,6 +77,8 @@ def handler(event, context):
             response_source = add_balance(source, -amount)
             response_dest = add_balance(dest, amount)
             return (response_source, response_dest)
+        else:
+            raise
         return (source_balance, dest_balance)
 
     def get_item(key_id: str):
@@ -87,16 +112,14 @@ def handler(event, context):
     operation = event["operation"]
 
     operations = {
-        "create": ddb_create,
-        "read": ddb_read,
-        "update": ddb_update,
-        "delete": ddb_delete,
-        "echo": echo,
+        "accountCreate": account_create,
+        "accountRead": account_read,
+        "accountDelete": account_delete,
         "transfer": transfer,
-        "add": add,
+        "deposit": deposit,
     }
 
     if operation in operations:
-        return operations[operation](event.get("payload"))
+        return operations[operation](event["payload"], event["params"])
     else:
         raise ValueError('Unrecognized operation "{}"'.format(operation))
