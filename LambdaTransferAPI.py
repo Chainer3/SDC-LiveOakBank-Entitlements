@@ -42,7 +42,7 @@ def handler(event, context):
         new_account = req["Item"]
         new_account["id"] = payload["accountId"]
         new_account["balance"] = payload["balance"]
-        ddb_create(req)
+        return ddb_create(req)
     
     def account_delete(_payload, params):
         """DELETE /accounts?accountId=22"""
@@ -98,6 +98,7 @@ def handler(event, context):
     def add_balance(key_id: str, add_amt: float):
         try:
             cur_balance = get_balance(key_id)
+            print(f"cur_balance {cur_balance}")
             response = dynamo.update_item(
                 Key={"id": key_id},
                 UpdateExpression="set balance=:r",
