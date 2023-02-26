@@ -1,3 +1,8 @@
+.env
+.pyc
+*.iml
+.directory
+.idea
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
