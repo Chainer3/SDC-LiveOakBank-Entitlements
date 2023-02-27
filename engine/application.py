@@ -2,7 +2,6 @@
 """
 
 import json
-import time
 import http.client
 from os import environ as env
 from urllib.parse import quote_plus, urlencode
@@ -11,6 +10,7 @@ from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask, redirect, render_template, session, url_for
 
+# Get AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_DOMAIN, APP_SECRET_KEY from .env file
 ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
@@ -20,6 +20,7 @@ application.secret_key = env.get("APP_SECRET_KEY")
 
 oauth = OAuth(application)
 
+# Configure Auth0
 oauth.register(
     "auth0",
     client_id=env.get("AUTH0_CLIENT_ID"),
@@ -31,8 +32,8 @@ oauth.register(
 )
 
 
-# Controllers API
 @application.route("/")
+# Home page that displays the user's info
 def home():
     return render_template(
         "home.html",
@@ -42,6 +43,7 @@ def home():
 
 
 @application.route("/callback", methods=["GET", "POST"])
+# Callback handler for Auth0 that authorizes the user and sets the session
 def callback():
     token = oauth.auth0.authorize_access_token()
     session["user"] = token
@@ -49,6 +51,7 @@ def callback():
 
 
 @application.route("/login")
+# Redirect to Auth0 login page
 def login():
     return oauth.auth0.authorize_redirect(
         redirect_uri=url_for("callback", _external=True)
@@ -56,6 +59,7 @@ def login():
 
 
 @application.route("/logout")
+# Redirect to Auth0 logout page
 def logout():
     session.clear()
     return redirect(
@@ -73,6 +77,7 @@ def logout():
 
 
 @application.route("/roles")
+# Get the user's roles from Auth0
 def roles():
     try:
         if session.get("user") is None:
@@ -111,11 +116,11 @@ def roles():
 
 
 @application.route("/opa")
+# Connect to OPA and make some example decisions
 def opa():
 
     try:
         response = ''
-
 
         client = OpaClient()  # default host='localhost', port=8181, version='v1'
 
@@ -124,19 +129,19 @@ def opa():
         inputs = [
             {
                 "input": {
-                    "method": "GET",
+                    "method": "POST",
                     "roles": ["owner"],
                     "params": {
-                        "amount": 500
+                        "amount": 15000
                     }
                 }
             },
             {
                 "input": {
                     "method": "POST",
-                    "roles": ["owner"],
+                    "roles": ["beneficial_owner"],
                     "params": {
-                        "amount": 501
+                        "amount": 10000
                     }
                 }
             },
