@@ -1,0 +1,8 @@
+# For OPA
+version: "2"
+services:
+  liveoak-opa:
+    ports:
+      - '8181:8181'
+    image: openpolicyagent/opa
+    command: 'run --server --log-level debug'

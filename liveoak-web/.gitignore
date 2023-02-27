@@ -3,6 +3,7 @@
 *.iml
 .directory
 .idea
+*.pem
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
