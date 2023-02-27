@@ -59,9 +59,9 @@ def handler(event, context):
         key["id"] = params["querystring"]["accountId"]
         return ddb_read(req)
 
-    def deposit(payload, _params):
+    def deposit(payload, params):
         amount = payload["amount"]
-        key_id = payload["accountId"]
+        key_id = params["path"]["accountid"]
 
         return add_balance(key_id, amount)
 
