@@ -89,9 +89,12 @@ def handler(event, context):
         {accountId: 12, balance: 500}"""
         req = {"Item": {}}
         new_account = req["Item"]
-        new_account["id"] = payload["accountId"]
+        id = payload["accountId"]
+        new_account["id"] = id
         new_account["balance"] = payload["balance"]
-        return ddb_create(req, bankDB)
+        response = ddb_create(req, bankDB)
+        if was_success(response):
+            return {"message": "Account was created successfully"}
 
     def account_delete(_payload, params):
         """DELETE /accounts?accountId=22"""

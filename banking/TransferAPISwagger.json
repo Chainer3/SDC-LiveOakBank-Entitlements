@@ -9,7 +9,7 @@
   "schemes" : [ "https" ],
   "paths" : {
     "/bankdatamanager/accounts" : {
-      "put" : {
+      "post" : {
         "consumes" : [ "application/json" ],
         "produces" : [ "application/json" ],
         "parameters" : [ {
