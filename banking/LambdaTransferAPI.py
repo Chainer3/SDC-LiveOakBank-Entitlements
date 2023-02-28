@@ -85,7 +85,7 @@ def handler(event, context):
     # API Functionality #
     #####################
     def account_create(payload, _params):
-        """PUT /accounts
+        """POST /accounts
         {accountId: 12, balance: 500}"""
         req = {"Item": {}}
         new_account = req["Item"]
@@ -95,26 +95,40 @@ def handler(event, context):
         response = ddb_create(req, bankDB)
         if was_success(response):
             return {"message": "Account was created successfully"}
+        else:
+            return {"message": "Failed to create account"}
 
     def account_delete(_payload, params):
-        """DELETE /accounts?accountId=22"""
+        """DELETE /accounts/{accountid}"""
         req = {"Key": {}}
         key = req["Key"]
         key["id"] = params["path"]["accountid"]
-        return ddb_delete(req, bankDB)
+        response = ddb_delete(req, bankDB)
+        if was_success(response):
+            return {"message": "Account was deleted successfully"}
+        else:
+            return {"message": "Failed to delete account"}
 
     def account_read(_payload, params):
-        """GET /accounts?accountId=22"""
+        """GET /accounts/{accountid}"""
         id = params["path"]["accountid"]
         return get_item(id, bankDB)
 
     def deposit(payload, params):
+        """POST /accounts/{accountid}
+        {amount: 300}"""
         amount = payload["amount"]
         key_id = params["path"]["accountid"]
 
-        return add_balance(key_id, amount)
+        response = add_balance(key_id, amount)
+        if was_success(response):
+            return {"message": "Deposit completed successfully"}
+        else:
+            return {"message": "Failed to deposit"}
 
     def transfer(payload, _params):
+        """POST /transfer
+        {sourceId: "1", destId: "2", amount: 200}"""
         source = payload["sourceId"]
         dest = payload["destId"]
         amount = payload["amount"]
