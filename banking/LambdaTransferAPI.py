@@ -2,14 +2,27 @@ from decimal import Decimal
 import boto3
 import json
 from botocore.exceptions import ClientError
+from uuid import uuid4
 
 # define the DynamoDB table that Lambda will connect to
-tableName = "lambda-bank-data"
+BANK_TABLE_NAME = "lambda-bank-data"
+TRANSFERS_TABLE_NAME = "lambda-transfers-table"
 
 # create the DynamoDB resource
-dynamo = boto3.resource("dynamodb").Table(tableName)
+bankDB = boto3.resource("dynamodb").Table(BANK_TABLE_NAME)
+transfersDB = boto3.resource("dynamodb").Table(TRANSFERS_TABLE_NAME)
 
 print("Loading function")
+
+
+def response_status(response) -> int:
+    """Helper function to extract HTTP status code from AWS response"""
+    return response["ResponseMetadata"]["HTTPStatusCode"]
+
+
+def was_success(response) -> bool:
+    """Helper function to check if a response was successful"""
+    return int(response_status(response) / 100) == 2
 
 
 def handler(event, context):
@@ -22,76 +35,33 @@ def handler(event, context):
     print(f"received event {event}")
     print(f"context {context}")
 
-    # define the functions used to perform the CRUD operations
-    def ddb_create(x):
-        return dynamo.put_item(**x)
+    ############################
+    # DynamoDB CRUD operations #
+    ############################
+    def ddb_create(x, db):
+        return db.put_item(**x)
 
-    def ddb_read(x):
-        return dynamo.get_item(**x)
+    def ddb_read(x, db):
+        return db.get_item(**x)
 
-    def ddb_update(x):
-        return dynamo.update_item(**x)
+    def ddb_update(x, db):
+        return db.update_item(**x)
 
-    def ddb_delete(x):
-        return dynamo.delete_item(**x)
+    def ddb_delete(x, db):
+        return db.delete_item(**x)
 
-    def account_create(payload, _params):
-        """PUT /accounts 
-        {accountId: 12, balance: 500}"""
-        req = {"Item": {}}
-        new_account = req["Item"]
-        new_account["id"] = payload["accountId"]
-        new_account["balance"] = payload["balance"]
-        return ddb_create(req)
-    
-    def account_delete(_payload, params):
-        """DELETE /accounts?accountId=22"""
-        req = {"Key": {}}
-        key = req["Key"]
-        key["id"] = params["querystring"]["accountId"]
-        return ddb_delete(req)
-
-
-    def account_read(_payload, params):
-        """GET /accounts?accountId=22"""
-        req = {"Key": {}}
-        key = req["Key"]
-        key["id"] = params["querystring"]["accountId"]
-        return ddb_read(req)
-
-    def deposit(payload, _params):
-        amount = payload["amount"]
-        key_id = payload["accountId"]
-
-        return add_balance(key_id, amount)
-
-    def transfer(payload, _params):
-        source = payload["sourceId"]
-        dest = payload["destId"]
-        amount = payload["amount"]
-
-        source_balance = get_balance(source)
-        dest_balance = get_balance(dest)
-
-        if source_balance >= amount:
-            response_source = add_balance(source, -amount)
-            response_dest = add_balance(dest, amount)
-            return (response_source, response_dest)
-        else:
-            raise
-        return (source_balance, dest_balance)
-
-    def get_item(key_id: str):
+    def get_item(key_id: str, db, key_name="id"):
         try:
-            response = dynamo.get_item(Key={"id": key_id})
+            response = db.get_item(Key={key_name: key_id})
         except ClientError as err:
             print(err.response["Error"]["Message"])
             raise
         else:
             return response["Item"]
 
+    # Helper functions
     def get_balance(key_id: str):
-        item = get_item(key_id)
+        item = get_item(key_id, bankDB)
         balance = item["balance"]
         return balance
 
@@ -99,16 +69,113 @@ def handler(event, context):
         try:
             cur_balance = get_balance(key_id)
             print(f"cur_balance {cur_balance}")
-            response = dynamo.update_item(
+            response = bankDB.update_item(
                 Key={"id": key_id},
                 UpdateExpression="set balance=:r",
                 ExpressionAttributeValues={":r": Decimal(str(cur_balance + add_amt))},
                 ReturnValues="UPDATED_NEW",
             )
         except ClientError as err:
+            print(err.response["Error"]["Message"])
             raise
         else:
             return response["Attributes"]
+
+    #####################
+    # API Functionality #
+    #####################
+    def account_create(payload, _params):
+        """POST /accounts
+        {accountId: 12, balance: 500}"""
+        req = {"Item": {}}
+        new_account = req["Item"]
+        id = payload["accountId"]
+        new_account["id"] = id
+        new_account["balance"] = payload["balance"]
+        response = ddb_create(req, bankDB)
+        if was_success(response):
+            return {"message": "Account was created successfully"}
+        else:
+            return {"message": "Failed to create account"}
+
+    def account_delete(_payload, params):
+        """DELETE /accounts/{accountid}"""
+        req = {"Key": {}}
+        key = req["Key"]
+        key["id"] = params["path"]["accountid"]
+        response = ddb_delete(req, bankDB)
+        if was_success(response):
+            return {"message": "Account was deleted successfully"}
+        else:
+            return {"message": "Failed to delete account"}
+
+    def account_read(_payload, params):
+        """GET /accounts/{accountid}"""
+        id = params["path"]["accountid"]
+        return get_item(id, bankDB)
+
+    def deposit(payload, params):
+        """POST /accounts/{accountid}
+        {amount: 300}"""
+        amount = payload["amount"]
+        key_id = params["path"]["accountid"]
+
+        response = add_balance(key_id, amount)
+        if was_success(response):
+            return {"message": "Deposit completed successfully"}
+        else:
+            return {"message": "Failed to deposit"}
+
+    def transfer(payload, _params):
+        """POST /transfer
+        {sourceId: "1", destId: "2", amount: 200}"""
+        source = payload["sourceId"]
+        dest = payload["destId"]
+        amount = payload["amount"]
+
+        source_balance = get_balance(source)
+
+        if source_balance >= amount:
+            try:
+                response_source = add_balance(source, -amount)
+                response_dest = add_balance(dest, amount)
+            except:
+                print("Something went wrong!")
+            # If balances were modified correctly
+            else:
+                transfer_record_id = store_transfer(source, dest, amount)
+                transfer_record = get_item(transfer_record_id, transfersDB)
+                response = {
+                    "message": "Transfer completed successfully",
+                    "TransferRecord": transfer_record,
+                }
+                return response
+            return {"message": "Failed to transfer"}
+        else:
+            return {"message": "Source balance too low to transfer requested amount"}
+
+    def store_transfer(source_id: str, dest_id: str, amount: float):
+        """Store a record of the completed transfer"""
+        # Create a unique identifier for this transfer
+        id = str(uuid4())
+
+        req = {"Item": {}}
+        transfer = req["Item"]
+        transfer["id"] = id
+        transfer["sourceId"] = source_id
+        transfer["destId"] = dest_id
+        transfer["amount"] = amount
+        try:
+            response = ddb_create(req, transfersDB)
+        except ClientError as err:
+            print(err.response["Error"]["Message"])
+            raise
+
+        if was_success(response):
+            return id
+        else:
+            print("Something went wrong storing transfer record!")
+            raise
 
     operation = event["operation"]
 
