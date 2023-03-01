@@ -1,7 +1,7 @@
 ### Deploy instructions
 Get new CLI credentials from access portal.
 #### Create Permissions Policy for Lambda
-Use `lambda-apigateway-policy.json` in IAM.
+Use `aws_config/lambda-apigateway-policy.json` in IAM.
 Create an execution role within the roles page of IAM that has access to Lambda and uses the policy you just created.
 The ARN of this execution role is needed for creating a new lambda from the CLI below.
 
