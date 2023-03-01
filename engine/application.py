@@ -150,7 +150,7 @@ def opa():
                     "method": "POST",
                     "roles": ["owner"],
                     "params": {
-                        "amount": 500
+                        "amount": 5001
                     }
                 }
             }
