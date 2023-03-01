@@ -80,11 +80,14 @@ def logout():
 # Get the user's roles from Auth0
 def roles():
     try:
+        # Redirect to login if user is not logged in
         if session.get("user") is None:
             return redirect("/login")
 
+        # Get user ID
         user_id = session.get("user")["userinfo"]["sub"]
 
+        # Connect to Auth0 management API to get a token
         conn = http.client.HTTPSConnection(env.get("AUTH0_DOMAIN"))
         payload = json.dumps({
             "client_id": env.get("AUTH0_CLIENT_ID"),
@@ -95,11 +98,12 @@ def roles():
         headers = {'content-type': "application/json"}
         conn.request("POST", "/oauth/token", payload, headers)
 
+        # Retrieve the token
         token_res = json.loads(
             conn.getresponse().read().decode("utf-8"))
-
         client_token = token_res["access_token"]
 
+        # Get the user's roles from Auth0 using their ID
         headers = {'Authorization': "Bearer " + client_token}
         conn.request("GET", f"/api/v2/users/{user_id}/roles", headers=headers)
 
@@ -110,6 +114,7 @@ def roles():
         roles = [{"name": role["name"], "description": role["description"]}
                  for role in json.loads(roles)]
 
+        # Return the user's roles
         return json.dumps(roles)
     except Exception as e:
         return "An error occurred when retrieving roles: " + str(e)
@@ -122,10 +127,13 @@ def opa():
     try:
         response = ''
 
+        # Connect to locally running OPA server on port 8181
         client = OpaClient()  # default host='localhost', port=8181, version='v1'
 
+        # Load a policy from the local file policy.rego
         client.update_opa_policy_fromfile("policy.rego", "testpolicy")
 
+        # Example requests
         inputs = [
             {
                 "input": {
@@ -156,6 +164,7 @@ def opa():
             }
         ]
 
+        # Make requests to OPA and return the decisions
         for i in inputs:
             response += json.dumps(i) + " ==> " + str(client.check_permission(
                 input_data=i, policy_name="testpolicy", rule_name="transfers")) + '<br/>'
