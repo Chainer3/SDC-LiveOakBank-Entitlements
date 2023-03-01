@@ -148,7 +148,7 @@ def opa():
             {
                 "input": {
                     "method": "POST",
-                    "roles": ["owner"],
+                    "roles": ["power_of_attorney"],
                     "params": {
                         "amount": 5001
                     }
