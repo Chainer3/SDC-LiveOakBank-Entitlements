@@ -1,0 +1,740 @@
+{
+	"info": {
+		"_postman_id": "3c4f6879-614f-4ad2-982e-d7a454f26f9e",
+		"name": "API Test Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25812184"
+	},
+	"item": [
+		{
+			"name": "delete account 1",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/accounts/1",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"accounts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete account 2",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/accounts/2",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"accounts",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create account 1 $100",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"accountId\": \"1\",\n    \"balance\": 100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/accounts",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create account 2 $0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"accountId\": \"2\",\n    \"balance\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/accounts",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get account 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Balance is 100\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.balance).to.eql(100);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/accounts/1",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"accounts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get account 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Balance is 0\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.balance).to.eql(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/accounts/2",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"accounts",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transfer 50 (1 -> 2)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Verify transfer record\", function () {",
+							"    var record = pm.response.json().TransferRecord;",
+							"    pm.expect(record.amount).to.eql(50);",
+							"    pm.expect(record.sourceId).to.eql(\"1\");",
+							"    pm.expect(record.destId).to.eql(\"2\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"sourceId\": \"1\",\n    \"destId\": \"2\",\n    \"amount\": 50\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/transfer",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transfer 100 (1 -> 2)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Verify transfer record\", function () {",
+							"    var record = pm.response.json().TransferRecord;",
+							"    pm.expect(record.amount).to.eql(25);",
+							"    pm.expect(record.sourceId).to.eql(\"1\");",
+							"    pm.expect(record.destId).to.eql(\"2\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"sourceId\": \"1\",\n    \"destId\": \"2\",\n    \"amount\": 25\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/transfer",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transfer 100 (1 -> 2) FAIL",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Verify transfer failed\", function () {",
+							"    var message = pm.response.json().message;",
+							"    pm.expect(message).to.eql(\"Source balance too low to transfer requested amount\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"sourceId\": \"1\",\n    \"destId\": \"2\",\n    \"amount\": 100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/transfer",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transfer 101 (2 -> 1) FAIL",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Verify transfer failed\", function () {",
+							"    var message = pm.response.json().message;",
+							"    pm.expect(message).to.eql(\"Source balance too low to transfer requested amount\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"sourceId\": \"2\",\n    \"destId\": \"1\",\n    \"amount\": 101\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/transfer",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get account 1 ($25)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Balance is 100\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.balance).to.eql(25);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/accounts/1",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"accounts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get account 2 ($75)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Balance is 0\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.balance).to.eql(75);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/accounts/2",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"accounts",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transfer 75 (2 -> 1)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Verify transfer record\", function () {",
+							"    var record = pm.response.json().TransferRecord;",
+							"    pm.expect(record.amount).to.eql(75);",
+							"    pm.expect(record.sourceId).to.eql(\"2\");",
+							"    pm.expect(record.destId).to.eql(\"1\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"sourceId\": \"2\",\n    \"destId\": \"1\",\n    \"amount\": 75\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/transfer",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get account 1 ($100)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Balance is 100\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.balance).to.eql(100);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/accounts/1",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"accounts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get account 2 ($0)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Balance is 0\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.balance).to.eql(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/accounts/2",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"accounts",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete account 1 Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Your test name\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"Account was deleted successfully\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/accounts/1",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"accounts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete account 2 Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Your test name\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"Account was deleted successfully\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://dit8joi4pa.execute-api.us-east-1.amazonaws.com/test/bankdatamanager/accounts/2",
+					"protocol": "https",
+					"host": [
+						"dit8joi4pa",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test",
+						"bankdatamanager",
+						"accounts",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
