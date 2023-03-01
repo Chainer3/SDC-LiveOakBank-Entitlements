@@ -3,6 +3,10 @@ import boto3
 import json
 from botocore.exceptions import ClientError
 from uuid import uuid4
+from ratelimit import limits, sleep_and_retry
+
+# define time (in seconds) for rate-limiting API requests
+TEN_MINUTES= 600
 
 # define the DynamoDB table that Lambda will connect to
 BANK_TABLE_NAME = "lambda-bank-data"
@@ -24,7 +28,8 @@ def was_success(response) -> bool:
     """Helper function to check if a response was successful"""
     return int(response_status(response) / 100) == 2
 
-
+@sleep_and_retry
+@limits(calls=100, period=TEN_MINUTES)
 def handler(event, context):
     """Provide an event that contains the following keys:
 
