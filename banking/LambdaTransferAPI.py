@@ -17,6 +17,7 @@ print("Loading function")
 
 def response_status(response) -> int:
     """Helper function to extract HTTP status code from AWS response"""
+    print(response)
     return response["ResponseMetadata"]["HTTPStatusCode"]
 
 
@@ -39,18 +40,23 @@ def handler(event, context):
     # DynamoDB CRUD operations #
     ############################
     def ddb_create(x, db):
+        """Create item in selected DB"""
         return db.put_item(**x)
 
     def ddb_read(x, db):
+        """Read item from selected DB"""
         return db.get_item(**x)
 
     def ddb_update(x, db):
+        """Update contents of item from selected DB"""
         return db.update_item(**x)
 
     def ddb_delete(x, db):
+        """Delete item from selected DB"""
         return db.delete_item(**x)
 
     def get_item(key_id: str, db, key_name="id"):
+        """Wrapper function to catch errors attempting to get item from selected DB"""
         try:
             response = db.get_item(Key={key_name: key_id})
         except ClientError as err:
@@ -59,13 +65,15 @@ def handler(event, context):
         else:
             return response["Item"]
 
-    # Helper functions
+    # Database Helper functions
     def get_balance(key_id: str):
+        """Get balance of account with the given key"""
         item = get_item(key_id, bankDB)
         balance = item["balance"]
         return balance
 
     def add_balance(key_id: str, add_amt: float):
+        """Attempt to add money to account with the given key"""
         try:
             cur_balance = get_balance(key_id)
             print(f"cur_balance {cur_balance}")
@@ -79,7 +87,7 @@ def handler(event, context):
             print(err.response["Error"]["Message"])
             raise
         else:
-            return response["Attributes"]
+            return response
 
     #####################
     # API Functionality #
@@ -87,11 +95,13 @@ def handler(event, context):
     def account_create(payload, _params):
         """POST /accounts
         {accountId: 12, balance: 500}"""
+        # construct database operation request
         req = {"Item": {}}
         new_account = req["Item"]
         id = payload["accountId"]
         new_account["id"] = id
         new_account["balance"] = payload["balance"]
+        # Create new account
         response = ddb_create(req, bankDB)
         if was_success(response):
             return {"message": "Account was created successfully"}
@@ -100,6 +110,7 @@ def handler(event, context):
 
     def account_delete(_payload, params):
         """DELETE /accounts/{accountid}"""
+        # construct database operation request
         req = {"Key": {}}
         key = req["Key"]
         key["id"] = params["path"]["accountid"]
@@ -120,6 +131,7 @@ def handler(event, context):
         amount = payload["amount"]
         key_id = params["path"]["accountid"]
 
+        # add balance to the account
         response = add_balance(key_id, amount)
         if was_success(response):
             return {"message": "Deposit completed successfully"}
