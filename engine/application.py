@@ -32,6 +32,34 @@ oauth.register(
 )
 
 
+def get_token():
+    """Connect to Auth0 management API to get a token"""
+    conn = http.client.HTTPSConnection(env.get("AUTH0_DOMAIN"))
+    payload = json.dumps(
+        {
+            "client_id": env.get("AUTH0_CLIENT_ID"),
+            "client_secret": env.get("AUTH0_CLIENT_SECRET"),
+            "audience": "https://" + env.get("AUTH0_DOMAIN") + "/api/v2/",
+            "grant_type": "client_credentials",
+        }
+    )
+    headers = {"content-type": "application/json"}
+    conn.request("POST", "/oauth/token", payload, headers)
+
+    # Retrieve the token
+    token_res = json.loads(conn.getresponse().read().decode("utf-8"))
+    return token_res["access_token"]
+
+
+def get_roles(user_id, client_token):
+    """Get the user's roles from Auth0 using their ID"""
+    conn = http.client.HTTPSConnection(env.get("AUTH0_DOMAIN"))
+    headers = {"Authorization": "Bearer " + client_token}
+    conn.request("GET", f"/api/v2/users/{user_id}/roles", headers=headers)
+
+    return json.loads(conn.getresponse().read().decode("utf-8"))
+
+
 @application.route("/")
 # Home page that displays the user's info
 def home():
@@ -87,32 +115,16 @@ def roles():
         # Get user ID
         user_id = session.get("user")["userinfo"]["sub"]
 
-        # Connect to Auth0 management API to get a token
-        conn = http.client.HTTPSConnection(env.get("AUTH0_DOMAIN"))
-        payload = json.dumps({
-            "client_id": env.get("AUTH0_CLIENT_ID"),
-            "client_secret": env.get("AUTH0_CLIENT_SECRET"),
-            "audience": "https://" + env.get("AUTH0_DOMAIN") + "/api/v2/",
-            "grant_type": "client_credentials",
-        })
-        headers = {'content-type': "application/json"}
-        conn.request("POST", "/oauth/token", payload, headers)
+        client_token = get_token()
+        print(client_token)
 
-        # Retrieve the token
-        token_res = json.loads(
-            conn.getresponse().read().decode("utf-8"))
-        client_token = token_res["access_token"]
-
-        # Get the user's roles from Auth0 using their ID
-        headers = {'Authorization': "Bearer " + client_token}
-        conn.request("GET", f"/api/v2/users/{user_id}/roles", headers=headers)
-
-        roles = conn.getresponse().read().decode("utf-8")
-
+        roles = get_roles(user_id, client_token)
         print("User roles: " + roles)
 
-        roles = [{"name": role["name"], "description": role["description"]}
-                 for role in json.loads(roles)]
+        roles = [
+            {"name": role["name"], "description": role["description"]}
+            for role in json.loads(roles)
+        ]
 
         # Return the user's roles
         return json.dumps(roles)
@@ -125,7 +137,7 @@ def roles():
 def opa():
 
     try:
-        response = ''
+        response = ""
 
         # Connect to locally running OPA server on port 8181
         client = OpaClient()  # default host='localhost', port=8181, version='v1'
@@ -139,35 +151,92 @@ def opa():
                 "input": {
                     "method": "POST",
                     "roles": ["owner"],
-                    "params": {
-                        "amount": 15000
-                    }
+                    "params": {"amount": 15000},
                 }
             },
             {
                 "input": {
                     "method": "POST",
                     "roles": ["beneficial_owner"],
-                    "params": {
-                        "amount": 10000
-                    }
+                    "params": {"amount": 10000},
                 }
             },
             {
                 "input": {
                     "method": "POST",
                     "roles": ["power_of_attorney"],
-                    "params": {
-                        "amount": 5001
-                    }
+                    "params": {"amount": 5001},
+                }
+            },
+        ]
+
+        # Make requests to OPA and return the decisions
+        for i in inputs:
+            response += (
+                json.dumps(i)
+                + " ==> "
+                + str(
+                    client.check_permission(
+                        input_data=i, policy_name="testpolicy", rule_name="transfers"
+                    )
+                )
+                + "<br/>"
+            )
+
+        return response
+
+    except Exception as e:
+        return str(e)
+
+
+@application.route("/enginetesting")
+# test evaluating a transfer request
+def enginetesting():
+    # {'operation': 'transfer', token: 'xxxxxxx',  'payload': {'sourceId': '2', 'destId': '1', 'amount': 25}}
+    try:
+        response = ""
+
+        # Connect to locally running OPA server on port 8181
+        client = OpaClient()  # default host='localhost', port=8181, version='v1'
+
+        # Load a policy from the local file policy.rego
+        client.update_opa_policy_fromfile("test.rego", "testpolicy")
+
+        # Get user ID
+        user_id = session.get("user")["userinfo"]["sub"]
+        client_token = get_token()
+
+        # Example requests
+        inputs = [
+            {
+                "input": {
+                    "operation": "transfer",
+                    "token": client_token,
+                    "payload": {"sourceId": "2", "destId": "1", "amount": 25},
                 }
             }
         ]
 
         # Make requests to OPA and return the decisions
         for i in inputs:
-            response += json.dumps(i) + " ==> " + str(client.check_permission(
-                input_data=i, policy_name="testpolicy", rule_name="transfers")) + '<br/>'
+            roles = get_roles(user_id, i["input"]["token"])
+
+            roles = [role["name"].lower() for role in roles]
+            print(roles)
+
+            i["input"]["roles"] = roles
+
+            rule_name = i["input"]["operation"]
+            response += (
+                json.dumps(i)
+                + " ==> "
+                + str(
+                    client.check_permission(
+                        input_data=i, policy_name="testpolicy", rule_name=rule_name
+                    )
+                )
+                + "<br/>"
+            )
 
         return response
 
