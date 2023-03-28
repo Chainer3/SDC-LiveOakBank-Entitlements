@@ -8,7 +8,7 @@ from urllib.parse import quote_plus, urlencode
 from opa_client.opa import OpaClient
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, redirect, render_template, session, url_for
+from flask import Flask, redirect, render_template, session, url_for, request
 
 # Get AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_DOMAIN, APP_SECRET_KEY from .env file
 ENV_FILE = find_dotenv()
@@ -150,20 +150,28 @@ def opa():
             {
                 "input": {
                     "method": "POST",
-                    "roles": ["owner"],
-                    "params": {"amount": 15000},
+                    "roles": ["Owner"],
+                    "params": {
+                        "amount": 15000
+                    }
                 }
             },
             {
                 "input": {
                     "method": "POST",
-                    "roles": ["beneficial_owner"],
-                    "params": {"amount": 10000},
+                    "roles": ["Beneficial Owner"],
+                    "params": {
+                        "amount": 10000
+                    }
                 }
             },
             {
                 "input": {
                     "method": "POST",
+                    "roles": ["Power of Attorney"],
+                    "params": {
+                        "amount": 5001
+                    }
                     "roles": ["power_of_attorney"],
                     "params": {"amount": 5001},
                 }
@@ -240,6 +248,29 @@ def enginetesting():
 
         return response
 
+    except Exception as e:
+        return str(e)
+
+
+@application.route('/<path:path>', methods=['GET', 'POST'])
+def catch_all(path):
+    if session.get("user") is None:
+        return redirect("/login")
+
+    client = OpaClient()
+    client.update_opa_policy_fromfile("policy.rego", "testpolicy")
+    input_data = {
+        "input": {
+            "method": request.method,
+            "roles": [role["name"] for role in json.loads(roles())],
+            "params": request.get_json()
+        }
+    }
+    try:
+        if client.check_permission(input_data=input_data, policy_name="testpolicy", rule_name=path):
+            return "Allowed"
+        else:
+            return "Not allowed"
     except Exception as e:
         return str(e)
 
