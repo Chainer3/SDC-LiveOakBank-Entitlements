@@ -14,7 +14,7 @@ def test_transfers1():
     input = {
         "input": {
             "method": "POST",
-            "roles": ["owner"],
+            "roles": ["Owner"],
             "params": {
                 "amount": 15000
             }
@@ -32,13 +32,13 @@ def test_transfers1():
 
     # Exceed limit
     input["input"]["params"]["amount"] = 10001
-    input["input"]["roles"] = ["beneficial_owner"]
+    input["input"]["roles"] = ["Beneficial Owner"]
 
     assert client.check_permission(
         input_data=input, policy_name="testpolicy", rule_name="transfers") == {'result': False}
 
     input["input"]["params"]["amount"] = 5001
-    input["input"]["roles"] = ["power_of_attorney"]
+    input["input"]["roles"] = ["Power of Attorney"]
 
     assert client.check_permission(
         input_data=input, policy_name="testpolicy", rule_name="transfers") == {'result': False}
@@ -49,7 +49,7 @@ def test_transfers2():
     input = {
         "input": {
             "method": "POST",
-            "roles": ["beneficial_owner"],
+            "roles": ["Beneficial Owner"],
             "params": {
                 "amount": 10000
             }
@@ -59,7 +59,7 @@ def test_transfers2():
     assert client.check_permission(
         input_data=input, policy_name="testpolicy", rule_name="transfers") == {'result': True}
 
-    input["input"]["roles"] = ["owner", "beneficial_owner"]
+    input["input"]["roles"] = ["Owner", "Beneficial Owner"]
 
     assert client.check_permission(
         input_data=input, policy_name="testpolicy", rule_name="transfers") == {'result': True}
@@ -69,7 +69,7 @@ def test_transfers2():
     assert client.check_permission(
         input_data=input, policy_name="testpolicy", rule_name="transfers") == {'result': False}
 
-    input["input"]["roles"] = ["something", "beneficial_owner"]
+    input["input"]["roles"] = ["something", "Beneficial Owner"]
 
     assert client.check_permission(
         input_data=input, policy_name="testpolicy", rule_name="transfers") == {'result': True}
@@ -80,7 +80,7 @@ def test_transfers3():
     input = {
         "input": {
             "method": "POST",
-            "roles": ["beneficial_owner"],
+            "roles": ["Beneficial Owner"],
             "params": {
                 "amount": 10000
             }
@@ -90,7 +90,7 @@ def test_transfers3():
     assert client.check_permission(
         input_data=input, policy_name="testpolicy", rule_name="transfers") == {'result': True}
 
-    input["input"]["roles"] = ["owner", "beneficial_owner"]
+    input["input"]["roles"] = ["Owner", "Beneficial Owner"]
 
     assert client.check_permission(
         input_data=input, policy_name="testpolicy", rule_name="transfers") == {'result': True}
@@ -100,7 +100,7 @@ def test_transfers3():
     assert client.check_permission(
         input_data=input, policy_name="testpolicy", rule_name="transfers") == {'result': False}
 
-    input["input"]["roles"] = ["something", "beneficial_owner"]
+    input["input"]["roles"] = ["something", "Beneficial Owner"]
 
     assert client.check_permission(
         input_data=input, policy_name="testpolicy", rule_name="transfers") == {'result': True}
@@ -111,7 +111,7 @@ def test_accounts1():
     input = {
         "input": {
             "method": "PUT",
-            "roles": ["power_of_attorney"],
+            "roles": ["Power of Attorney"],
         }
     }
 
