@@ -26,3 +26,24 @@ aws lambda update-function-code --function-name LambdaTransferAPI --zip-file fil
 ```bash
 aws apigateway get-export --parameters extensions='apigateway' --rest-api-id whu5vcahxe --stage-name test --export-type swagger TransferAPISwagger.json
 ```
+
+
+### Adding requests module to deployment package
+```bash
+pip install --target ./package requests
+```
+
+```bash
+cd package
+zip -r ../deployment-package.zip .
+```
+
+```bash
+cd ..
+zip deployment-package.zip LambdaTransferAPI.py
+```
+
+```bash
+zip deployment-package.zip LambdaTransferAPI.py
+aws lambda update-function-code --function-name LambdaTransferAPI --zip-file fileb://deployment-package.zip
+```

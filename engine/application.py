@@ -9,6 +9,7 @@ from opa_client.opa import OpaClient
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask, redirect, render_template, session, url_for, request
+import jwt
 
 # Get AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_DOMAIN, APP_SECRET_KEY from .env file
 ENV_FILE = find_dotenv()
@@ -48,6 +49,7 @@ def get_token():
 
     # Retrieve the token
     token_res = json.loads(conn.getresponse().read().decode("utf-8"))
+    # print(token_res["access_token"])
     return token_res["access_token"]
 
 
@@ -151,28 +153,20 @@ def opa():
                 "input": {
                     "method": "POST",
                     "roles": ["Owner"],
-                    "params": {
-                        "amount": 15000
-                    }
+                    "params": {"amount": 15000},
                 }
             },
             {
                 "input": {
                     "method": "POST",
                     "roles": ["Beneficial Owner"],
-                    "params": {
-                        "amount": 10000
-                    }
+                    "params": {"amount": 10000},
                 }
             },
             {
                 "input": {
                     "method": "POST",
                     "roles": ["Power of Attorney"],
-                    "params": {
-                        "amount": 5001
-                    }
-                    "roles": ["power_of_attorney"],
                     "params": {"amount": 5001},
                 }
             },
@@ -197,82 +191,115 @@ def opa():
         return str(e)
 
 
-@application.route("/enginetesting")
+@application.route("/enginetesting", methods=["GET", "POST"])
 # test evaluating a transfer request
 def enginetesting():
-    # {'operation': 'transfer', token: 'xxxxxxx',  'payload': {'sourceId': '2', 'destId': '1', 'amount': 25}}
-    try:
-        response = ""
+    PROTECT_ENDPOINTS = ["transfer"]
+    if request.method == "POST":
+        request_body = json.loads(request.data)
+        # {'operation': 'transfer', token: 'xxxxxxx', user_id: 'xxxxxx',  'payload': {'sourceId': '2', 'destId': '1', 'amount': 25}}
+        try:
+            rule_name = request_body["operation"]
+            if not rule_name in PROTECT_ENDPOINTS:
+                response = json.dumps({"result": True})
+                return response
 
-        # Connect to locally running OPA server on port 8181
-        client = OpaClient()  # default host='localhost', port=8181, version='v1'
+            # Connect to locally running OPA server on port 8181
+            client = OpaClient()  # default host='localhost', port=8181, version='v1'
 
-        # Load a policy from the local file policy.rego
-        client.update_opa_policy_fromfile("test.rego", "testpolicy")
+            # Load a policy from the local file policy.rego
+            client.update_opa_policy_fromfile("test.rego", "testpolicy")
 
-        # Get user ID
-        user_id = session.get("user")["userinfo"]["sub"]
-        client_token = get_token()
+            # construct input to OPA
+            input = {"input": request_body}
+            id_token = input["input"]["payload"]["idToken"]
+            id_data = jwt.decode(
+                id_token, algorithms=["RS256"], options={"verify_signature": False}
+            )
+            user_id = id_data["sub"]
 
-        # Example requests
-        inputs = [
-            {
-                "input": {
-                    "operation": "transfer",
-                    "token": client_token,
-                    "payload": {"sourceId": "2", "destId": "1", "amount": 25},
-                }
-            }
-        ]
-
-        # Make requests to OPA and return the decisions
-        for i in inputs:
-            roles = get_roles(user_id, i["input"]["token"])
+            # Make requests to OPA and return the decisions
+            roles = get_roles(user_id, input["input"]["payload"]["accessToken"])
 
             roles = [role["name"].lower() for role in roles]
-            print(roles)
 
-            i["input"]["roles"] = roles
+            input["input"]["roles"] = roles
 
-            rule_name = i["input"]["operation"]
-            response += (
-                json.dumps(i)
-                + " ==> "
-                + str(
-                    client.check_permission(
-                        input_data=i, policy_name="testpolicy", rule_name=rule_name
-                    )
-                )
-                + "<br/>"
+            decision = client.check_permission(
+                input_data=input, policy_name="testpolicy", rule_name=rule_name
             )
+            # response = ""
+            # response += (
+            #     json.dumps(input)
+            #     + " ==> "
+            #     + str(
+            #         client.check_permission(
+            #             input_data=input, policy_name="testpolicy", rule_name=rule_name
+            #         )
+            #     )
+            #     + "<br/>"
+            # )
 
-        return response
+            return decision
+        except Exception as e:
+            response = json.dumps({"result": False, "error": str(e)})
+            return response
+    elif request.method == "GET":
+        # Get user ID
+        user_id = session.get("user")["userinfo"]["sub"]
+        id_token = session.get("user")["id_token"]
+        client_token = get_token()
+        # token_data = jwt.decode(
+        #     client_token, algorithms=["RS256"], options={"verify_signature": False}
+        # )
+        # print(f"id token: {id_token}")
+        # print(f"access token: {client_token}")
 
-    except Exception as e:
-        return str(e)
-
-
-@application.route('/<path:path>', methods=['GET', 'POST'])
-def catch_all(path):
-    if session.get("user") is None:
-        return redirect("/login")
-
-    client = OpaClient()
-    client.update_opa_policy_fromfile("policy.rego", "testpolicy")
-    input_data = {
-        "input": {
-            "method": request.method,
-            "roles": [role["name"] for role in json.loads(roles())],
-            "params": request.get_json()
+        transfer_req = {
+            "sourceId": "2",
+            "destId": "1",
+            "amount": 25,
+            "idToken": id_token,
+            "accessToken": client_token,
         }
-    }
-    try:
-        if client.check_permission(input_data=input_data, policy_name="testpolicy", rule_name=path):
-            return "Allowed"
-        else:
-            return "Not allowed"
-    except Exception as e:
-        return str(e)
+
+        API_DOMAIN = "dit8joi4pa.execute-api.us-east-1.amazonaws.com"
+        TRANSFER_ENDPOINT = "/test/bankdatamanager/transfer"
+
+        conn = http.client.HTTPSConnection(API_DOMAIN)
+        payload = json.dumps(transfer_req)
+        headers = {"content-type": "application/json"}
+        conn.request("POST", TRANSFER_ENDPOINT, payload, headers)
+
+        # Retrieve the token
+        api_response = json.loads(conn.getresponse().read().decode("utf-8"))
+        return json.dumps(api_response)
+        # return json.dumps(transfer_req)
+
+
+# @application.route("/<path:path>", methods=["GET", "POST"])
+# def catch_all(path):
+#     if session.get("user") is None:
+#         return redirect("/login")
+
+#     client = OpaClient()
+#     client.update_opa_policy_fromfile("policy.rego", "testpolicy")
+#     input_data = {
+#         "input": {
+#             "method": request.method,
+#             "roles": [role["name"] for role in json.loads(roles())],
+#             "params": request.get_json(),
+#         }
+#     }
+#     try:
+#         if client.check_permission(
+#             input_data=input_data, policy_name="testpolicy", rule_name=path
+#         ):
+#             return "Allowed"
+#         else:
+#             return "Not allowed"
+#     except Exception as e:
+#         return str(e)
 
 
 if __name__ == "__main__":

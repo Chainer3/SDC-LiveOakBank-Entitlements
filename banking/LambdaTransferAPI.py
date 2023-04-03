@@ -3,10 +3,14 @@ import boto3
 import json
 from botocore.exceptions import ClientError
 from uuid import uuid4
+import requests
 
 # define the DynamoDB table that Lambda will connect to
 BANK_TABLE_NAME = "lambda-bank-data"
 TRANSFERS_TABLE_NAME = "lambda-transfers-table"
+ENTITLEMENT_URL = "http://flask-env.eba-2vgd6nqw.us-east-1.elasticbeanstalk.com/"
+ENTITLEMENT_ENDPOINT = "/enginetesting"
+# ENTITLEMENT_URL = "http://flask-env.eba-2vgd6nqw.us-east-1.elasticbeanstalk.com/"
 
 # create the DynamoDB resource
 bankDB = boto3.resource("dynamodb").Table(BANK_TABLE_NAME)
@@ -33,8 +37,6 @@ def handler(event, context):
     - payload: a JSON object containing parameters to pass to the
                operation being performed
     """
-    print(f"received event {event}")
-    print(f"context {context}")
 
     ############################
     # DynamoDB CRUD operations #
@@ -54,6 +56,10 @@ def handler(event, context):
     def ddb_delete(x, db):
         """Delete item from selected DB"""
         return db.delete_item(**x)
+
+    def ddb_scan(x, db):
+        """Get all items from selected DB"""
+        return db.scan()
 
     def get_item(key_id: str, db, key_name="id"):
         """Wrapper function to catch errors attempting to get item from selected DB"""
@@ -189,6 +195,9 @@ def handler(event, context):
             print("Something went wrong storing transfer record!")
             raise
 
+    def get_transfers(payload, params):
+        return ddb_scan("", transfersDB)
+
     operation = event["operation"]
 
     operations = {
@@ -197,7 +206,20 @@ def handler(event, context):
         "accountDelete": account_delete,
         "transfer": transfer,
         "deposit": deposit,
+        "getTransfers": get_transfers,
     }
+
+    print(f"received event {event}")
+    print(f"context {context}")
+
+    # send request to entitlement engine
+    res = requests.post(ENTITLEMENT_URL + ENTITLEMENT_ENDPOINT, json=event)
+    print(f"result text {res.text}")
+    decision_result = json.loads(res.text)
+    decision = decision_result["result"]
+    print(f"Decision: {decision}")
+    if not decision is True:
+        raise ValueError("User is not entitled to their request!")
 
     if operation in operations:
         return operations[operation](event["payload"], event["params"])
