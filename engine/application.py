@@ -219,7 +219,8 @@ def enginetesting():
             user_id = id_data["sub"]
 
             # Make requests to OPA and return the decisions
-            roles = get_roles(user_id, input["input"]["payload"]["accessToken"])
+            roles = get_roles(
+                user_id, input["input"]["payload"]["accessToken"])
 
             roles = [role["name"].lower() for role in roles]
 
@@ -277,29 +278,44 @@ def enginetesting():
         # return json.dumps(transfer_req)
 
 
-# @application.route("/<path:path>", methods=["GET", "POST"])
-# def catch_all(path):
-#     if session.get("user") is None:
-#         return redirect("/login")
+@application.route("/<path:path>", methods=["GET", "POST"])
+def entitlement(path):
+    """Forward a request to the API Gateway after checking the user's entitlements"""
 
-#     client = OpaClient()
-#     client.update_opa_policy_fromfile("policy.rego", "testpolicy")
-#     input_data = {
-#         "input": {
-#             "method": request.method,
-#             "roles": [role["name"] for role in json.loads(roles())],
-#             "params": request.get_json(),
-#         }
-#     }
-#     try:
-#         if client.check_permission(
-#             input_data=input_data, policy_name="testpolicy", rule_name=path
-#         ):
-#             return "Allowed"
-#         else:
-#             return "Not allowed"
-#     except Exception as e:
-#         return str(e)
+    if session.get("user") is None:
+        return redirect("/login")
+
+    try:
+        # Connect to locally running OPA server on port 8181
+        client = OpaClient()
+        client.update_opa_policy_fromfile("policy.rego", "testpolicy")
+        input_data = {"input": {
+            "method": request.method,
+            "roles": [role["name"] for role in json.loads(roles())],
+            "params": request.get_json(),
+        }}
+
+        # Check entitlement based on the request info
+        if not client.check_permission(
+                input_data=input_data, policy_name="testpolicy", rule_name=path):
+            return "Forbidden", 403
+
+        # Forward the request to the API Gateway
+        api_req = request.get_json()
+        api_req["idToken"] = session.get("user")["id_token"]
+        api_req["accessToken"] = get_token()
+
+        conn = http.client.HTTPSConnection(env.get("API_DOMAIN"))
+        endpoint = f"/test/bankdatamanager/{path}"
+        payload = json.dumps(api_req)
+        headers = {"content-type": "application/json"}
+        conn.request(request.method, endpoint, payload, headers)
+
+        api_response = json.loads(conn.getresponse().read().decode("utf-8"))
+        return api_response
+
+    except Exception as e:
+        return str(e)
 
 
 if __name__ == "__main__":
