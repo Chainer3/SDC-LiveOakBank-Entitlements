@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{% block title %} {{ title_label }}{% endblock %}</h1>
+
+<form method="POST">
+    <!-- {{ form.csrf_token }} -->
+    <p>
+        {{ form.accountId.label }}
+        {{ form.accountId(size=20) }}
+    </p>
+
+    {% if form.accountId.errors %}
+    <ul class="errors">
+        {% for error in form.accountId.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p>
+        <input type="submit">
+    </p>
+
+    {% for message in messages %}
+    <p>{{message}}</p>
+    {% endfor %}
+</form>
+
+{% endblock %}
