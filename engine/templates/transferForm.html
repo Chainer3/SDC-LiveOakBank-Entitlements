@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{% block title %} Transfer Money {% endblock %}</h1>
+
+<form method="POST">
+    <!-- {{ form.csrf_token }} -->
+    <p>
+        {{ form.sourceId.label }}
+        {{ form.sourceId(size=20) }}
+    </p>
+
+    {% if form.sourceId.errors %}
+    <ul class="errors">
+        {% for error in form.sourceId.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p>
+        {{ form.destId.label }}
+        {{ form.destId(size=20) }}
+    </p>
+
+    {% if form.destId.errors %}
+    <ul class="errors">
+        {% for error in form.destId.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p>
+        {{ form.amount.label }}
+        {{ form.amount() }}
+    </p>
+
+    {% if form.amount.errors %}
+    <ul class="errors">
+        {% for error in form.amount.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p>
+        <input type="submit">
+    </p>
+
+    {% for message in messages %}
+    <p>{{message}}</p>
+    {% endfor %}
+</form>
+
+{% endblock %}

@@ -9,7 +9,7 @@ from opa_client.opa import OpaClient
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask, redirect, render_template, session, url_for, request
-from forms import CreateAccountForm, AccountForm, DepositAccountForm
+from forms import CreateAccountForm, AccountForm, DepositAccountForm, TransferForm
 import jwt
 
 # Get AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_DOMAIN, APP_SECRET_KEY from .env file
@@ -456,6 +456,39 @@ def deposit():
     form = DepositAccountForm()
     return render_template(
         "depositAccountForm.html",
+        form=form,
+        messages=messages,
+    )
+
+
+@application.route("/banking/transfer", methods=("GET", "POST"))
+def transfer():
+    # Redirect to login if user is not logged in
+    if session.get("user") is None:
+        return redirect("/login")
+
+    messages = []
+    if request.method == "POST":
+        request_dict = request.form.to_dict(flat=True)
+
+        req = {
+            "sourceId": request_dict["sourceId"],
+            "destId": request_dict["destId"],
+            "amount": int(request_dict["amount"]),
+        }
+        api_response = sendAPIRequest(
+            req,
+            TRANSFER_ENDPOINT,
+            "POST",
+            with_tokens=True,
+        )
+        # return json.dumps(api_response)
+        messages = [api_response]
+
+    # re-render the form
+    form = TransferForm()
+    return render_template(
+        "transferForm.html",
         form=form,
         messages=messages,
     )

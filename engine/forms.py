@@ -24,3 +24,15 @@ class DepositAccountForm(FlaskForm):
         validators=[InputRequired(), Length(min=1, max=100)],
     )
     amount = IntegerField("Deposit Amount", validators=[InputRequired()])
+
+
+class TransferForm(FlaskForm):
+    sourceId = StringField(
+        "Source Account ID",
+        validators=[InputRequired(), Length(min=1, max=100)],
+    )
+    destId = StringField(
+        "Destination Account ID",
+        validators=[InputRequired(), Length(min=1, max=100)],
+    )
+    amount = IntegerField("Amount", validators=[InputRequired()])
