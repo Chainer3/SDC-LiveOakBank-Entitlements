@@ -11,8 +11,16 @@ class CreateAccountForm(FlaskForm):
     balance = IntegerField("Account Balance", validators=[InputRequired()])
 
 
-class GetAccountForm(FlaskForm):
+class AccountForm(FlaskForm):
     accountId = StringField(
         "Account ID",
         validators=[InputRequired(), Length(min=1, max=100)],
     )
+
+
+class DepositAccountForm(FlaskForm):
+    accountId = StringField(
+        "Account ID",
+        validators=[InputRequired(), Length(min=1, max=100)],
+    )
+    amount = IntegerField("Deposit Amount", validators=[InputRequired()])

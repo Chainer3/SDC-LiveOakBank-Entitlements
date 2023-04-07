@@ -9,7 +9,7 @@ from opa_client.opa import OpaClient
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask, redirect, render_template, session, url_for, request
-from forms import CreateAccountForm
+from forms import CreateAccountForm, AccountForm, DepositAccountForm
 import jwt
 
 # Get AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_DOMAIN, APP_SECRET_KEY from .env file
@@ -394,7 +394,7 @@ def getAccount():
         messages = [api_response]
 
     # re-render the form
-    form = CreateAccountForm()
+    form = AccountForm()
     return render_template(
         "accountForm.html",
         form=form,
@@ -423,12 +423,41 @@ def deleteAccount():
         messages = [api_response]
 
     # re-render the form
-    form = CreateAccountForm()
+    form = AccountForm()
     return render_template(
         "accountForm.html",
         form=form,
         messages=messages,
         title_label="Delete Bank Account",
+    )
+
+
+@application.route("/banking/deposit", methods=("GET", "POST"))
+def deposit():
+    # Redirect to login if user is not logged in
+    if session.get("user") is None:
+        return redirect("/login")
+
+    messages = []
+    if request.method == "POST":
+        request_dict = request.form.to_dict(flat=True)
+
+        req = {"amount": int(request_dict["amount"])}
+        api_response = sendAPIRequest(
+            req,
+            f"{DEPOSIT_ENDPOINT}/{request_dict['accountId']}",
+            "POST",
+            with_tokens=True,
+        )
+        # return json.dumps(api_response)
+        messages = [api_response]
+
+    # re-render the form
+    form = DepositAccountForm()
+    return render_template(
+        "depositAccountForm.html",
+        form=form,
+        messages=messages,
     )
 
 
