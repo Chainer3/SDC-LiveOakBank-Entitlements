@@ -324,6 +324,31 @@ def entitlement(path):
         return str(e)
 
 
+def sendAPIRequest(req_dict, endpoint, method, with_tokens=True):
+    """Helper function to send API request to the lambda. By default adds
+    id and access tokens to the request json. Uses the provided endpoint
+    and method in addition to the global API_DOMAIN"""
+    id_token = session.get("user")["id_token"]
+    access_token = get_token()
+
+    if with_tokens:
+        req_dict["idToken"] = id_token
+        req_dict["accessToken"] = access_token
+
+    conn = http.client.HTTPSConnection(API_DOMAIN)
+    payload = json.dumps(req_dict)
+    headers = {"content-type": "application/json"}
+    conn.request(
+        method,
+        endpoint,
+        payload,
+        headers,
+    )
+
+    # Return the response
+    return json.loads(conn.getresponse().read().decode("utf-8"))
+
+
 @application.route("/banking/createaccount", methods=("GET", "POST"))
 def createAccount():
     # Redirect to login if user is not logged in
@@ -334,23 +359,13 @@ def createAccount():
     if request.method == "POST":
         request_dict = request.form.to_dict(flat=True)
 
-        id_token = session.get("user")["id_token"]
-        access_token = get_token()
-
         req = {
             "accountId": request_dict["accountId"],
             "balance": int(request_dict["balance"]),
-            "idToken": id_token,
-            "accessToken": access_token,
         }
 
-        conn = http.client.HTTPSConnection(API_DOMAIN)
-        payload = json.dumps(req)
-        headers = {"content-type": "application/json"}
-        conn.request("POST", ACCOUNT_ENDPOINT, payload, headers)
+        api_response = sendAPIRequest(req, ACCOUNT_ENDPOINT, "POST", with_tokens=True)
 
-        # Retrieve the response
-        api_response = json.loads(conn.getresponse().read().decode("utf-8"))
         # return json.dumps(api_response)
         messages = [api_response]
 
@@ -369,23 +384,12 @@ def getAccount():
     if request.method == "POST":
         request_dict = request.form.to_dict(flat=True)
 
-        id_token = session.get("user")["id_token"]
-        access_token = get_token()
-
-        req = {
-            "idToken": id_token,
-            "accessToken": access_token,
-        }
-
-        conn = http.client.HTTPSConnection(API_DOMAIN)
-        payload = json.dumps(req)
-        headers = {"content-type": "application/json"}
-        conn.request(
-            "GET", f"{ACCOUNT_ENDPOINT}/{request_dict['accountId']}", payload, headers
+        api_response = sendAPIRequest(
+            {},
+            f"{ACCOUNT_ENDPOINT}/{request_dict['accountId']}",
+            "GET",
+            with_tokens=True,
         )
-
-        # Retrieve the response
-        api_response = json.loads(conn.getresponse().read().decode("utf-8"))
         # return json.dumps(api_response)
         messages = [api_response]
 
@@ -404,26 +408,12 @@ def deleteAccount():
     if request.method == "POST":
         request_dict = request.form.to_dict(flat=True)
 
-        id_token = session.get("user")["id_token"]
-        access_token = get_token()
-
-        req = {
-            "idToken": id_token,
-            "accessToken": access_token,
-        }
-
-        conn = http.client.HTTPSConnection(API_DOMAIN)
-        payload = json.dumps(req)
-        headers = {"content-type": "application/json"}
-        conn.request(
-            "DELETE",
+        api_response = sendAPIRequest(
+            {},
             f"{ACCOUNT_ENDPOINT}/{request_dict['accountId']}",
-            payload,
-            headers,
+            "DELETE",
+            with_tokens=True,
         )
-
-        # Retrieve the response
-        api_response = json.loads(conn.getresponse().read().decode("utf-8"))
         # return json.dumps(api_response)
         messages = [api_response]
 
