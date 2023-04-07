@@ -1,0 +1,15 @@
+{% block content %}
+<h1>{% block title %} Create a new bank account {% endblock %}</h1>
+<form method="post">
+    <label for="accountId">Account ID</label>
+    <br>
+    <input type="text" name="accountId" placeholder="Enter String ID" value="{{ request.form['accountId'] }}"></input>
+    <br>
+    <label for="balance">Account Balance</label>
+    <br>
+    <input type="number" name="balance" placeholder=0 value="{{ request.form['amount'] }}"></input>
+
+    <br>
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

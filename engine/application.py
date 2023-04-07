@@ -9,6 +9,7 @@ from opa_client.opa import OpaClient
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask, redirect, render_template, session, url_for, request
+from forms import CreateAccountForm
 import jwt
 
 # Get AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_DOMAIN, APP_SECRET_KEY from .env file
@@ -20,6 +21,12 @@ application = Flask(__name__)
 application.secret_key = env.get("APP_SECRET_KEY")
 
 oauth = OAuth(application)
+
+API_DOMAIN = "dit8joi4pa.execute-api.us-east-1.amazonaws.com"
+ENDPOINT_BASE = "/test/bankdatamanager"
+TRANSFER_ENDPOINT = f"{ENDPOINT_BASE}/transfer"
+DEPOSIT_ENDPOINT = f"{ENDPOINT_BASE}/deposit"
+ACCOUNT_ENDPOINT = f"{ENDPOINT_BASE}/accounts"
 
 # Configure Auth0
 oauth.register(
@@ -219,8 +226,7 @@ def enginetesting():
             user_id = id_data["sub"]
 
             # Make requests to OPA and return the decisions
-            roles = get_roles(
-                user_id, input["input"]["payload"]["accessToken"])
+            roles = get_roles(user_id, input["input"]["payload"]["accessToken"])
 
             roles = [role["name"].lower() for role in roles]
 
@@ -264,9 +270,6 @@ def enginetesting():
             "accessToken": client_token,
         }
 
-        API_DOMAIN = "dit8joi4pa.execute-api.us-east-1.amazonaws.com"
-        TRANSFER_ENDPOINT = "/test/bankdatamanager/transfer"
-
         conn = http.client.HTTPSConnection(API_DOMAIN)
         payload = json.dumps(transfer_req)
         headers = {"content-type": "application/json"}
@@ -289,15 +292,18 @@ def entitlement(path):
         # Connect to locally running OPA server on port 8181
         client = OpaClient()
         client.update_opa_policy_fromfile("policy.rego", "testpolicy")
-        input_data = {"input": {
-            "method": request.method,
-            "roles": [role["name"] for role in json.loads(roles())],
-            "params": request.get_json(),
-        }}
+        input_data = {
+            "input": {
+                "method": request.method,
+                "roles": [role["name"] for role in json.loads(roles())],
+                "params": request.get_json(),
+            }
+        }
 
         # Check entitlement based on the request info
         if not client.check_permission(
-                input_data=input_data, policy_name="testpolicy", rule_name=path):
+            input_data=input_data, policy_name="testpolicy", rule_name=path
+        ):
             return "Forbidden", 403
 
         # Forward the request to the API Gateway
@@ -316,6 +322,39 @@ def entitlement(path):
 
     except Exception as e:
         return str(e)
+
+
+@application.route("/banking/createaccount", methods=("GET", "POST"))
+def createAccount():
+    # Redirect to login if user is not logged in
+    if session.get("user") is None:
+        return redirect("/login")
+
+    if request.method == "POST":
+        request_dict = request.form.to_dict(flat=True)
+
+        id_token = session.get("user")["id_token"]
+        access_token = get_token()
+
+        req = {
+            "accountId": request_dict["accountId"],
+            "balance": int(request_dict["balance"]),
+            "idToken": id_token,
+            "accessToken": access_token,
+        }
+
+        conn = http.client.HTTPSConnection(API_DOMAIN)
+        payload = json.dumps(req)
+        headers = {"content-type": "application/json"}
+        conn.request("POST", ACCOUNT_ENDPOINT, payload, headers)
+
+        # Retrieve the response
+        api_response = json.loads(conn.getresponse().read().decode("utf-8"))
+        return json.dumps(api_response)
+    elif request.method == "GET":
+        form = CreateAccountForm()
+        return render_template("createAccountForm2.html", form=form)
+        # return render_template("createAccountForm.html")
 
 
 if __name__ == "__main__":
