@@ -356,8 +356,7 @@ def createAccount():
 
     # re-render the form
     form = CreateAccountForm()
-    return render_template("createAccountForm2.html", form=form, messages=messages)
-    # return render_template("createAccountForm.html")
+    return render_template("createAccountForm.html", form=form, messages=messages)
 
 
 if __name__ == "__main__":

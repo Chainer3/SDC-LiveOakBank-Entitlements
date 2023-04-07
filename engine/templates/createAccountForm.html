@@ -1,15 +1,41 @@
 {% block content %}
-<h1>{% block title %} Create a new bank account {% endblock %}</h1>
-<form method="post">
-    <label for="accountId">Account ID</label>
-    <br>
-    <input type="text" name="accountId" placeholder="Enter String ID" value="{{ request.form['accountId'] }}"></input>
-    <br>
-    <label for="balance">Account Balance</label>
-    <br>
-    <input type="number" name="balance" placeholder=0 value="{{ request.form['amount'] }}"></input>
+<h1>{% block title %} Add a New Course {% endblock %}</h1>
 
-    <br>
-    <button type="submit">Submit</button>
+<form method="POST">
+    <!-- {{ form.csrf_token }} -->
+    <p>
+        {{ form.accountId.label }}
+        {{ form.accountId(size=20) }}
+    </p>
+
+    {% if form.accountId.errors %}
+    <ul class="errors">
+        {% for error in form.accountId.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p>
+        {{ form.balance.label }}
+        {{ form.balance() }}
+    </p>
+
+    {% if form.balance.errors %}
+    <ul class="errors">
+        {% for error in form.balance.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p>
+        <input type="submit">
+    </p>
+
+    {% for message in messages %}
+    <p>{{message}}</p>
+    {% endfor %}
 </form>
+
 {% endblock %}
