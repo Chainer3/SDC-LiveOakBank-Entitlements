@@ -395,7 +395,12 @@ def getAccount():
 
     # re-render the form
     form = CreateAccountForm()
-    return render_template("getAccountForm.html", form=form, messages=messages)
+    return render_template(
+        "accountForm.html",
+        form=form,
+        messages=messages,
+        title_label="Get Bank Account Info",
+    )
 
 
 @application.route("/banking/deleteaccount", methods=("GET", "POST"))
@@ -419,7 +424,12 @@ def deleteAccount():
 
     # re-render the form
     form = CreateAccountForm()
-    return render_template("deleteAccountForm.html", form=form, messages=messages)
+    return render_template(
+        "accountForm.html",
+        form=form,
+        messages=messages,
+        title_label="Delete Bank Account",
+    )
 
 
 if __name__ == "__main__":
