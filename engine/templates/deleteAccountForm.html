@@ -1,5 +1,5 @@
 {% block content %}
-<h1>{% block title %} Create a new Account {% endblock %}</h1>
+<h1>{% block title %} Delete Bank Account {% endblock %}</h1>
 
 <form method="POST">
     <!-- {{ form.csrf_token }} -->
@@ -11,19 +11,6 @@
     {% if form.accountId.errors %}
     <ul class="errors">
         {% for error in form.accountId.errors %}
-        <li>{{ error }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
-    <p>
-        {{ form.balance.label }}
-        {{ form.balance() }}
-    </p>
-
-    {% if form.balance.errors %}
-    <ul class="errors">
-        {% for error in form.balance.errors %}
         <li>{{ error }}</li>
         {% endfor %}
     </ul>

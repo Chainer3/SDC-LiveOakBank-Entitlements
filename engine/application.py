@@ -359,5 +359,78 @@ def createAccount():
     return render_template("createAccountForm.html", form=form, messages=messages)
 
 
+@application.route("/banking/getaccount", methods=("GET", "POST"))
+def getAccount():
+    # Redirect to login if user is not logged in
+    if session.get("user") is None:
+        return redirect("/login")
+
+    messages = []
+    if request.method == "POST":
+        request_dict = request.form.to_dict(flat=True)
+
+        id_token = session.get("user")["id_token"]
+        access_token = get_token()
+
+        req = {
+            "idToken": id_token,
+            "accessToken": access_token,
+        }
+
+        conn = http.client.HTTPSConnection(API_DOMAIN)
+        payload = json.dumps(req)
+        headers = {"content-type": "application/json"}
+        conn.request(
+            "GET", f"{ACCOUNT_ENDPOINT}/{request_dict['accountId']}", payload, headers
+        )
+
+        # Retrieve the response
+        api_response = json.loads(conn.getresponse().read().decode("utf-8"))
+        # return json.dumps(api_response)
+        messages = [api_response]
+
+    # re-render the form
+    form = CreateAccountForm()
+    return render_template("getAccountForm.html", form=form, messages=messages)
+
+
+@application.route("/banking/deleteaccount", methods=("GET", "POST"))
+def deleteAccount():
+    # Redirect to login if user is not logged in
+    if session.get("user") is None:
+        return redirect("/login")
+
+    messages = []
+    if request.method == "POST":
+        request_dict = request.form.to_dict(flat=True)
+
+        id_token = session.get("user")["id_token"]
+        access_token = get_token()
+
+        req = {
+            "idToken": id_token,
+            "accessToken": access_token,
+        }
+
+        conn = http.client.HTTPSConnection(API_DOMAIN)
+        payload = json.dumps(req)
+        headers = {"content-type": "application/json"}
+        conn.request(
+            "DELETE",
+            f"{ACCOUNT_ENDPOINT}/{request_dict['accountId']}",
+            payload,
+            headers,
+        )
+
+        # Retrieve the response
+        api_response = json.loads(conn.getresponse().read().decode("utf-8"))
+        # return json.dumps(api_response)
+        messages = [api_response]
+
+    # re-render the form
+    form = CreateAccountForm()
+    return render_template("deleteAccountForm.html", form=form, messages=messages)
+
+
 if __name__ == "__main__":
     application.run()

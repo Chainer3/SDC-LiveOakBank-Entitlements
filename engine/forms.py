@@ -9,3 +9,10 @@ class CreateAccountForm(FlaskForm):
         validators=[InputRequired(), Length(min=1, max=100)],
     )
     balance = IntegerField("Account Balance", validators=[InputRequired()])
+
+
+class GetAccountForm(FlaskForm):
+    accountId = StringField(
+        "Account ID",
+        validators=[InputRequired(), Length(min=1, max=100)],
+    )
