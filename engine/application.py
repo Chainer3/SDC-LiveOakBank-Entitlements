@@ -330,6 +330,7 @@ def createAccount():
     if session.get("user") is None:
         return redirect("/login")
 
+    messages = []
     if request.method == "POST":
         request_dict = request.form.to_dict(flat=True)
 
@@ -350,11 +351,13 @@ def createAccount():
 
         # Retrieve the response
         api_response = json.loads(conn.getresponse().read().decode("utf-8"))
-        return json.dumps(api_response)
-    elif request.method == "GET":
-        form = CreateAccountForm()
-        return render_template("createAccountForm2.html", form=form)
-        # return render_template("createAccountForm.html")
+        # return json.dumps(api_response)
+        messages = [api_response]
+
+    # re-render the form
+    form = CreateAccountForm()
+    return render_template("createAccountForm2.html", form=form, messages=messages)
+    # return render_template("createAccountForm.html")
 
 
 if __name__ == "__main__":
