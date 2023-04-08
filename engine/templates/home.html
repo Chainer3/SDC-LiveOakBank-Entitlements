@@ -33,7 +33,9 @@
     left: 331px;
     top: 22px;
     background-color: #4700A4;
-    border: groove;
+    border: 1.5px solid #9A9999;
+    border-radius: 2px;
+    font-family:FS Koopman Medium,Helvetica,Arial,sans-serif;
     color: #FFFFFF;
   }
 
@@ -44,8 +46,24 @@
     left: 1300px;
     top: 14px;
     border: groove;
+    font-family:FS Koopman Medium,Helvetica,Arial,sans-serif;
     color: #4700A4;
     background-color: #EBEBEB;
+  }
+  
+  .transfer-btn {
+    position: absolute;
+    width: 324px;
+    height: 46px;
+    left: 50px;
+    top: 424px;
+    background-color: #4700A4;
+    border: 1.5px solid #9A9999;
+    border-radius: 4px;
+    font-family:FS Koopman Medium,Helvetica,Arial,sans-serif;
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: bold;
   }
   
   .accounts-container {
@@ -66,7 +84,41 @@
     border-top: 3px solid #e9e9e9;
   }
   
-  .accounts-box-title {
+/*   .accounts-box-title {
+    position: relative;
+    width: 428px;
+    height: 31px;
+    top: 2px;
+    font-family: FS Koopman Medium,Helvetica,Arial,sans-serif;
+    align-items: center;
+    text-align: center;
+    color: #240053;
+  } */
+
+  .accounts-box-personal {
+    position: relative;
+    width: 414px;
+    height: 32px;
+    top: 20px;
+    left: 8px;
+    border: none;
+    border-radius: 2px;
+    background: #240053;
+  }
+ 
+  .accounts-box-managed {
+    position: relative;
+    width: 414px;
+    height: 32px;
+    top: 120px;
+    left: 8px;
+    font-family: FS Koopman Medium,Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    background: #240053;
+    color: #FFFFFF;
+  }
+  
+  h1 {
     position: relative;
     width: 428px;
     height: 31px;
@@ -76,28 +128,13 @@
     text-align: center;
     color: #240053;
   }
-
-  .accounts-box-personal {
-    position: relative;
-    width: 410px;
-    height: 31px;
-    top: 25px;
-    left: 8px;
+  
+  h2 {
+    text-align: left;
+    padding: 2px 0px 0px 5px;
     font-family: FS Koopman Medium,Helvetica,Arial,sans-serif;
-    font-size: 16px;
-    background: #240053;
+    font-size: 24px;
     color: #FFFFFF;
-  }
- 
-  .accounts-box-managed {
-    position: relative;
-    width: 410px;
-    height: 44px;
-    left: 434px;
-    top: 400px;
-    display: inline-block;
-    font-size: 16px;
-    background: #240053;
   }
   
   .disable {
@@ -135,20 +172,19 @@
 		  </g>
 		</svg>
 	  </div>
-	  <button class="accounts-btn" style="font-family:FS Koopman Medium,Helvetica,Arial,sans-serif">Accounts</button>
-	  <button class="logout-btn" style="font-family:FS Koopman Medium,Helvetica,Arial,sans-serif">Logout</button>
+	  <button class="accounts-btn">Accounts</button>
+	  <button class="logout-btn">Logout</button>
 	</div>
 	<div class="accounts-container">
-	  <div class="col-xs-12 col-sm-4 col-sm-offset-4 accounts-box">
-	    <div class="accounts-box-title">
+	  <div class="accounts-box">
 	      <h1>ACCOUNTS</h1>
-	    </div>
 	    <div class="accounts-box-personal">
-	      <h2 style="text-align: left-center">Owned</h2>
+	      <h2>Owned</h2>
 	    </div>
 	    <div class="accounts-box-managed">
-	      <h2>Managed</h2>
+	      <h2 style="text-align: left; padding: 2px 0px 0px 5px;">Managed</h2>
 	    </div>
+	    <button class="transfer-btn">TRANSFER</button>
 	  </div>
 	</div>
 <!-- 	{% if session %}
