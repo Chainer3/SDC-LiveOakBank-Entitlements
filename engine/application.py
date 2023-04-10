@@ -36,7 +36,7 @@ ALLOWED_EXTENSIONS = {"rego"}
 
 oauth = OAuth(application)
 
-API_DOMAIN = "dit8joi4pa.execute-api.us-east-1.amazonaws.com"
+API_DOMAIN = env.get("API_DOMAIN")
 ENDPOINT_BASE = "/test/bankdatamanager"
 TRANSFER_ENDPOINT = f"{ENDPOINT_BASE}/transfer"
 DEPOSIT_ENDPOINT = f"{ENDPOINT_BASE}/deposit"
