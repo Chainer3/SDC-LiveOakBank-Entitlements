@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{% block title %} Transfer History for account {{accountId}} {% endblock %}</h1>
+
+{% for transfer in transfers %}
+<p>{{transfer}}</p>
+{% endfor %}
+
+{% endblock %}

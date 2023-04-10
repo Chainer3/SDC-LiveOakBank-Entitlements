@@ -513,5 +513,29 @@ def accountsHome():
     return render_template("accountsHomeTest.html", accounts=accounts)
 
 
+@application.route("/banking/accounts/<id>")
+def accountHistory(id):
+    # Redirect to login if user is not logged in
+    if session.get("user") is None:
+        return redirect("/login")
+
+    api_response = sendAPIRequest(
+        {},
+        TRANSFER_ENDPOINT,
+        "GET",
+        with_tokens=True,
+    )
+    all_transfers = api_response["Items"]
+
+    transfers = []
+    for transfer in all_transfers:
+        if transfer["sourceId"] == id or transfer["destId"] == id:
+            transfers.append((transfer))
+
+    print(transfers)
+
+    return render_template("accountHistoryTest.html", accountId=id, transfers=transfers)
+
+
 if __name__ == "__main__":
     application.run()
