@@ -497,6 +497,7 @@ def transfer():
 
 @application.route("/banking/accounts")
 def accountsHome():
+    """Display basic information for all accounts"""
     # Redirect to login if user is not logged in
     if session.get("user") is None:
         return redirect("/login")
@@ -515,6 +516,7 @@ def accountsHome():
 
 @application.route("/banking/accounts/<id>")
 def accountHistory(id):
+    """Show transfer history for the account corresponding with the route param"""
     # Redirect to login if user is not logged in
     if session.get("user") is None:
         return redirect("/login")
@@ -535,6 +537,18 @@ def accountHistory(id):
     print(transfers)
 
     return render_template("accountHistoryTest.html", accountId=id, transfers=transfers)
+
+
+@application.route("/admin/")
+def admin():
+    if session.get("user") is None:
+        return redirect("/login")
+    user_id = session.get("user")["userinfo"]["sub"]
+    access_token = get_token()
+    roles = [role["name"] for role in get_roles(user_id, access_token)]
+
+    if not "Admin" in roles:
+        return "Admin access required"
 
 
 if __name__ == "__main__":
