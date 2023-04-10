@@ -142,11 +142,10 @@ def roles():
         print(client_token)
 
         roles = get_roles(user_id, client_token)
-        print("User roles: " + roles)
+        print(roles)
 
         roles = [
-            {"name": role["name"], "description": role["description"]}
-            for role in json.loads(roles)
+            {"name": role["name"], "description": role["description"]} for role in roles
         ]
 
         # Return the user's roles
@@ -369,6 +368,11 @@ def sendAPIRequest(req_dict, endpoint, method, with_tokens=True):
     return json.loads(conn.getresponse().read().decode("utf-8"))
 
 
+@application.route("/banking", methods=["GET"])
+def bankingFormsHome():
+    return render_template("bankingHome.html")
+
+
 @application.route("/banking/createaccount", methods=("GET", "POST"))
 def createAccount():
     # Redirect to login if user is not logged in
@@ -559,15 +563,21 @@ def accountHistory(id):
     return render_template("accountHistoryTest.html", accountId=id, transfers=transfers)
 
 
-@application.route("/admin/")
-def admin():
+def is_admin():
     if session.get("user") is None:
-        return redirect("/login")
+        return False
     user_id = session.get("user")["userinfo"]["sub"]
     access_token = get_token()
     roles = [role["name"] for role in get_roles(user_id, access_token)]
 
     if not "Admin" in roles:
+        return False
+    return True
+
+
+@application.route("/admin/")
+def admin():
+    if not is_admin():
         return "Admin access required"
 
     rule_files = glob.glob(application.config["RULES_FOLDER"] + "/*.rego*")
@@ -583,6 +593,8 @@ def allowed_file(filename):
 
 @application.route("/admin/upload_rules", methods=["POST"])
 def upload_rules():
+    if not is_admin():
+        return redirect(url_for("admin"))
     # check if the post request has the file part
     if "file" not in request.files:
         flash("No file part")
@@ -606,6 +618,8 @@ def upload_rules():
 
 @application.route("/admin/download_rules", methods=["POST"])
 def download_rules():
+    if not is_admin():
+        return redirect(url_for("admin"))
     request_dict = request.form.to_dict(flat=True)
     print(request_dict)
     return send_from_directory(
