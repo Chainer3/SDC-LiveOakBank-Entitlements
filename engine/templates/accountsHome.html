@@ -1,17 +1,21 @@
 {% extends 'base.html' %}
+
+<!-- 	{% if session %}
+	<h1>Welcome {{session.userinfo.name}}!</h1>
+	<p>
+		<a href="/logout" id="qsLogoutBtn">Logout</a>
+	</p>
+	<div>
+		<pre>{{pretty}}</pre>
+	</div>
+	{% else %}
+	<h1 id="profileDropDown">Welcome Guest</h1>
+	<p>
+		<a href="/login" id="qsLoginBtn">Login</a>
+	</p>
+	{% endif %} -->
 {% block content %}
-<h1>{% block title %} Account Information {% endblock %}</h1>
-
-{% for account in accounts %}
-<p>{{account}}</p>
-
-{% endfor %}
-
-{% endblock %}
-
-
 <style>
-/*
   .header-container {
     position: absolute;
     width: 100%;
@@ -38,7 +42,7 @@
     background-color: #4700A4;
     border: 1.5px solid #9A9999;
     border-radius: 2px;
-    font-family:FS Koopman Medium,Helvetica,Arial,sans-serif;
+    font-family: FS Koopman Medium, Helvetica, Arial, sans-serif;
     font-size: 20px;
     color: #FFFFFF;
   }
@@ -50,13 +54,12 @@
     left: 90%;
     top: 32%;
     border: groove;
-    font-family:FS Koopman Medium,Helvetica,Arial,sans-serif;
+    font-family: FS Koopman Medium, Helvetica, Arial, sans-serif;
     font-size: 20px;
     color: #4700A4;
     background-color: #EBEBEB;
   }
-  */
-  
+
   .transfer-btn {
     position: absolute;
     width: 324px;
@@ -66,21 +69,22 @@
     background-color: #4700A4;
     border: 1.5px solid #9A9999;
     border-radius: 4px;
-    font-family:FS Koopman Medium,Helvetica,Arial,sans-serif;
+    font-family: FS Koopman Medium, Helvetica, Arial, sans-serif;
     color: #FFFFFF;
     font-size: 18px;
     font-weight: bold;
+    text-align: center;
   }
-  
+
   .accounts-container {
     position: absolute;
     height: 100%;
     left: 50%;
     top: 25%;
     left: 40%;
-    
+
   }
-  
+
   .accounts-box {
     position: absolute;
     box-sizing: border-box;
@@ -92,8 +96,8 @@
     outline: black;
     outline-width: 2px;
   }
-  
-/*   .accounts-box-title {
+
+  /*   .accounts-box-title {
     position: relative;
     width: 428px;
     height: 31px;
@@ -113,63 +117,59 @@
     border: none;
     border-radius: 2px;
     font-size: 16px;
-    background: #240053;
+    /* background: #240053; */
   }
- 
+
   .accounts-box-managed {
     position: relative;
     width: 90%;
     height: 6.5%;
     top: 25%;
     left: 5%;
-    font-family: FS Koopman Medium,Helvetica,Arial,sans-serif;
+    font-family: FS Koopman Medium, Helvetica, Arial, sans-serif;
     font-size: 16px;
     background: #240053;
     color: #FFFFFF;
   }
-  
+
   h1 {
     position: relative;
     width: 428px;
     height: 31px;
     top: 2px;
-    font-family: FS Koopman Medium,Helvetica,Arial,sans-serif;
+    font-family: FS Koopman Medium, Helvetica, Arial, sans-serif;
     align-items: center;
     text-align: center;
     color: #240053;
   }
-  
+
   h2 {
     text-align: left;
     padding: 2px 0px 0px 5px;
-    font-family: FS Koopman Medium,Helvetica,Arial,sans-serif;
+    font-family: FS Koopman Medium, Helvetica, Arial, sans-serif;
     font-size: 24px;
     color: #FFFFFF;
   }
-  
+
   .disable {
-  opacity: 0.6;
-  cursor: not-allowed;
+    opacity: 0.6;
+    cursor: not-allowed;
   }
+</style>
+<!-- <h1>{% block title %} Account Information {% endblock %}</h1> -->
 
-</style> 
-	
-<!-- 	{% if session %}
-	<h1>Welcome {{session.userinfo.name}}!</h1>
-	<p>
-		<a href="/logout" id="qsLogoutBtn">Logout</a>
-	</p>
-	<div>
-		<pre>{{pretty}}</pre>
-	</div>
-	{% else %}
-	<h1 id="profileDropDown">Welcome Guest</h1>
-	<p>
-		<a href="/login" id="qsLoginBtn">Login</a>
-	</p>
-	{% endif %} -->
+<div class="accounts-container">
+  <div class="accounts-box">
+    <h1>ACCOUNTS</h1>
+    <div class="accounts-box-personal">
+      {% for account in accounts %}
+      <p>{{account}}</p>
+
+      {% endfor %}
+    </div>
+    <a class="transfer-btn" href="/banking/transfer">TRANSFER</a>
+  </div>
+</div>
 
 
-
-
-
+{% endblock %}
