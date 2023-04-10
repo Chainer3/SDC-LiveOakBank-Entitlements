@@ -495,5 +495,23 @@ def transfer():
     )
 
 
+@application.route("/banking/accounts")
+def accountsHome():
+    # Redirect to login if user is not logged in
+    if session.get("user") is None:
+        return redirect("/login")
+
+    api_response = sendAPIRequest(
+        {},
+        ACCOUNT_ENDPOINT,
+        "GET",
+        with_tokens=True,
+    )
+    accounts = api_response["Items"]
+    print(accounts)
+
+    return render_template("accountsHomeTest.html", accounts=accounts)
+
+
 if __name__ == "__main__":
     application.run()
