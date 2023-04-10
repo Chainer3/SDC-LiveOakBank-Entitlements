@@ -531,7 +531,7 @@ def accountsHome():
     accounts = api_response["Items"]
     print(accounts)
 
-    return render_template("accountsHomeTest.html", accounts=accounts)
+    return render_template("home.html", accounts=accounts)
 
 
 @application.route("/banking/accounts/<id>")
