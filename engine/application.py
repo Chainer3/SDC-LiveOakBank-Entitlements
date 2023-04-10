@@ -176,21 +176,21 @@ def opa():
                 "input": {
                     "method": "POST",
                     "roles": ["owner"],
-                    "params": {"amount": 15000},
+                    "payload": {"amount": 15000},
                 }
             },
             {
                 "input": {
                     "method": "POST",
                     "roles": ["beneficial owner"],
-                    "params": {"amount": 10000},
+                    "payload": {"amount": 10000},
                 }
             },
             {
                 "input": {
                     "method": "POST",
                     "roles": ["power of attorney"],
-                    "params": {"amount": 5001},
+                    "payload": {"amount": 5001},
                 }
             },
         ]
