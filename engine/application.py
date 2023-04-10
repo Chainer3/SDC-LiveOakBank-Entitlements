@@ -142,11 +142,10 @@ def roles():
         print(client_token)
 
         roles = get_roles(user_id, client_token)
-        print("User roles: " + roles)
+        print(roles)
 
         roles = [
-            {"name": role["name"], "description": role["description"]}
-            for role in json.loads(roles)
+            {"name": role["name"], "description": role["description"]} for role in roles
         ]
 
         # Return the user's roles
@@ -367,6 +366,11 @@ def sendAPIRequest(req_dict, endpoint, method, with_tokens=True):
 
     # Return the response
     return json.loads(conn.getresponse().read().decode("utf-8"))
+
+
+@application.route("/banking", methods=["GET"])
+def bankingFormsHome():
+    return render_template("bankingHome.html")
 
 
 @application.route("/banking/createaccount", methods=("GET", "POST"))
