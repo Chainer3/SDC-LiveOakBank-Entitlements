@@ -150,6 +150,7 @@ def handler(event, context):
         source = payload["sourceId"]
         dest = payload["destId"]
         amount = payload["amount"]
+        memo = payload["memo"]
 
         source_balance = get_balance(source)
 
@@ -161,7 +162,7 @@ def handler(event, context):
                 print("Something went wrong!")
             # If balances were modified correctly
             else:
-                transfer_record_id = store_transfer(source, dest, amount)
+                transfer_record_id = store_transfer(source, dest, amount, memo)
                 transfer_record = get_item(transfer_record_id, transfersDB)
                 response = {
                     "message": "Transfer completed successfully",
@@ -172,7 +173,7 @@ def handler(event, context):
         else:
             return {"message": "Source balance too low to transfer requested amount"}
 
-    def store_transfer(source_id: str, dest_id: str, amount: float):
+    def store_transfer(source_id: str, dest_id: str, amount: float, memo: str):
         """Store a record of the completed transfer"""
         # Create a unique identifier for this transfer
         id = str(uuid4())
@@ -183,6 +184,7 @@ def handler(event, context):
         transfer["sourceId"] = source_id
         transfer["destId"] = dest_id
         transfer["amount"] = amount
+        transfer["memo"] = memo
         try:
             response = ddb_create(req, transfersDB)
         except ClientError as err:

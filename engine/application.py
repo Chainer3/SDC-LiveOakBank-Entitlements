@@ -475,6 +475,7 @@ def transfer():
             "sourceId": request_dict["sourceId"],
             "destId": request_dict["destId"],
             "amount": int(request_dict["amount"]),
+            "memo": request_dict["memo"],
         }
         api_response = sendAPIRequest(
             req,

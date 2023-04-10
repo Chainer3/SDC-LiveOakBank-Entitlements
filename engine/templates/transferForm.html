@@ -43,6 +43,21 @@
     </ul>
     {% endif %}
 
+
+    <p>
+        {{ form.memo.label }}
+        {{ form.memo(size=20) }}
+    </p>
+
+    {% if form.memo.errors %}
+    <ul class="errors">
+        {% for error in form.memo.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
     <p>
         <input type="submit">
     </p>

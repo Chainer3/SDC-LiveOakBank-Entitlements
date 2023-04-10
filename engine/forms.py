@@ -36,3 +36,7 @@ class TransferForm(FlaskForm):
         validators=[InputRequired(), Length(min=1, max=100)],
     )
     amount = IntegerField("Amount", validators=[InputRequired()])
+    memo = TextAreaField(
+        "Transfer Memo",
+        validators=[InputRequired(), Length(min=1, max=100)],
+    )
