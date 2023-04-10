@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{% block title %} Admin Page {% endblock %}</h1>
+<h2>Upload new Rules file</h1>
+    <form method=post enctype=multipart/form-data action="upload_rules">
+        <input type=file name=file>
+        <input type=submit value=Upload>
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    {% endblock %}

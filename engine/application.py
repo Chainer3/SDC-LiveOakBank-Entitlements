@@ -3,12 +3,23 @@
 
 import json
 import http.client
+import os
+import datetime
 from os import environ as env
 from urllib.parse import quote_plus, urlencode
 from opa_client.opa import OpaClient
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, redirect, render_template, session, url_for, request
+from flask import (
+    Flask,
+    flash,
+    redirect,
+    render_template,
+    session,
+    url_for,
+    request,
+    send_from_directory,
+)
 from forms import CreateAccountForm, AccountForm, DepositAccountForm, TransferForm
 import jwt
 
@@ -19,6 +30,8 @@ if ENV_FILE:
 
 application = Flask(__name__)
 application.secret_key = env.get("APP_SECRET_KEY")
+application.config["RULES_FOLDER"] = "rules_folder"
+ALLOWED_EXTENSIONS = {"rego"}
 
 oauth = OAuth(application)
 
@@ -152,28 +165,31 @@ def opa():
         client = OpaClient()  # default host='localhost', port=8181, version='v1'
 
         # Load a policy from the local file policy.rego
-        client.update_opa_policy_fromfile("policy.rego", "testpolicy")
+        client.update_opa_policy_fromfile(
+            os.path.join(application.config["RULES_FOLDER"], "policy.rego"),
+            "testpolicy",
+        )
 
         # Example requests
         inputs = [
             {
                 "input": {
                     "method": "POST",
-                    "roles": ["Owner"],
+                    "roles": ["owner"],
                     "params": {"amount": 15000},
                 }
             },
             {
                 "input": {
                     "method": "POST",
-                    "roles": ["Beneficial Owner"],
+                    "roles": ["beneficial owner"],
                     "params": {"amount": 10000},
                 }
             },
             {
                 "input": {
                     "method": "POST",
-                    "roles": ["Power of Attorney"],
+                    "roles": ["power of attorney"],
                     "params": {"amount": 5001},
                 }
             },
@@ -186,7 +202,7 @@ def opa():
                 + " ==> "
                 + str(
                     client.check_permission(
-                        input_data=i, policy_name="testpolicy", rule_name="transfers"
+                        input_data=i, policy_name="testpolicy", rule_name="transfer"
                     )
                 )
                 + "<br/>"
@@ -215,7 +231,10 @@ def enginetesting():
             client = OpaClient()  # default host='localhost', port=8181, version='v1'
 
             # Load a policy from the local file policy.rego
-            client.update_opa_policy_fromfile("test.rego", "testpolicy")
+            client.update_opa_policy_fromfile(
+                os.path.join(application.config["RULES_FOLDER"], "policy.rego"),
+                "testpolicy",
+            )
 
             # construct input to OPA
             input = {"input": request_body}
@@ -281,47 +300,47 @@ def enginetesting():
         # return json.dumps(transfer_req)
 
 
-@application.route("/<path:path>", methods=["GET", "POST"])
-def entitlement(path):
-    """Forward a request to the API Gateway after checking the user's entitlements"""
+# @application.route("/<path:path>", methods=["GET", "POST"])
+# def entitlement(path):
+#     """Forward a request to the API Gateway after checking the user's entitlements"""
 
-    if session.get("user") is None:
-        return redirect("/login")
+#     if session.get("user") is None:
+#         return redirect("/login")
 
-    try:
-        # Connect to locally running OPA server on port 8181
-        client = OpaClient()
-        client.update_opa_policy_fromfile("policy.rego", "testpolicy")
-        input_data = {
-            "input": {
-                "method": request.method,
-                "roles": [role["name"] for role in json.loads(roles())],
-                "params": request.get_json(),
-            }
-        }
+#     try:
+#         # Connect to locally running OPA server on port 8181
+#         client = OpaClient()
+#         client.update_opa_policy_fromfile("policy.rego", "testpolicy")
+#         input_data = {
+#             "input": {
+#                 "method": request.method,
+#                 "roles": [role["name"] for role in json.loads(roles())],
+#                 "params": request.get_json(),
+#             }
+#         }
 
-        # Check entitlement based on the request info
-        if not client.check_permission(
-            input_data=input_data, policy_name="testpolicy", rule_name=path
-        ):
-            return "Forbidden", 403
+#         # Check entitlement based on the request info
+#         if not client.check_permission(
+#             input_data=input_data, policy_name="testpolicy", rule_name=path
+#         ):
+#             return "Forbidden", 403
 
-        # Forward the request to the API Gateway
-        api_req = request.get_json()
-        api_req["idToken"] = session.get("user")["id_token"]
-        api_req["accessToken"] = get_token()
+#         # Forward the request to the API Gateway
+#         api_req = request.get_json()
+#         api_req["idToken"] = session.get("user")["id_token"]
+#         api_req["accessToken"] = get_token()
 
-        conn = http.client.HTTPSConnection(env.get("API_DOMAIN"))
-        endpoint = f"/test/bankdatamanager/{path}"
-        payload = json.dumps(api_req)
-        headers = {"content-type": "application/json"}
-        conn.request(request.method, endpoint, payload, headers)
+#         conn = http.client.HTTPSConnection(env.get("API_DOMAIN"))
+#         endpoint = f"/test/bankdatamanager/{path}"
+#         payload = json.dumps(api_req)
+#         headers = {"content-type": "application/json"}
+#         conn.request(request.method, endpoint, payload, headers)
 
-        api_response = json.loads(conn.getresponse().read().decode("utf-8"))
-        return api_response
+#         api_response = json.loads(conn.getresponse().read().decode("utf-8"))
+#         return api_response
 
-    except Exception as e:
-        return str(e)
+#     except Exception as e:
+#         return str(e)
 
 
 def sendAPIRequest(req_dict, endpoint, method, with_tokens=True):
@@ -549,7 +568,40 @@ def admin():
 
     if not "Admin" in roles:
         return "Admin access required"
-    return "Admin dashboard"
+    return render_template("admin.html")
+
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@application.route("/admin/upload_rules", methods=["POST"])
+def upload_rules():
+    # check if the post request has the file part
+    if "file" not in request.files:
+        flash("No file part")
+        return redirect(request.url)
+    file = request.files["file"]
+    # If the user does not select a file, the browser submits an
+    # empty file without a filename.
+    if file.filename == "":
+        flash("No selected file")
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        flash(f"Uploaded {file.filename}")
+        filename = file.filename
+        timestamp = datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
+        rules_file = os.path.join(application.config["RULES_FOLDER"], "policy.rego")
+
+        # Save old rules policy
+        os.rename(rules_file, rules_file + timestamp)
+        file.save(os.path.join(application.config["RULES_FOLDER"], "policy.rego"))
+        return redirect(url_for("admin"))
+
+
+@application.route("/uploads/<name>")
+def download_file(name):
+    return send_from_directory(application.config["RULES_FOLDER"], name)
 
 
 if __name__ == "__main__":
