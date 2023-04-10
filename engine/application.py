@@ -5,6 +5,7 @@ import json
 import http.client
 import os
 import datetime
+import glob
 from os import environ as env
 from urllib.parse import quote_plus, urlencode
 from opa_client.opa import OpaClient
@@ -568,7 +569,12 @@ def admin():
 
     if not "Admin" in roles:
         return "Admin access required"
-    return render_template("admin.html")
+
+    rule_files = glob.glob(application.config["RULES_FOLDER"] + "/*.rego*")
+    rule_files = [
+        f.lstrip(application.config["RULES_FOLDER"] + "/") for f in rule_files
+    ]
+    return render_template("admin.html", rule_files=rule_files)
 
 
 def allowed_file(filename):
@@ -580,28 +586,31 @@ def upload_rules():
     # check if the post request has the file part
     if "file" not in request.files:
         flash("No file part")
-        return redirect(request.url)
+        return redirect(url_for("admin"))
     file = request.files["file"]
     # If the user does not select a file, the browser submits an
     # empty file without a filename.
     if file.filename == "":
         flash("No selected file")
-        return redirect(request.url)
-    if file and allowed_file(file.filename):
+    elif file and allowed_file(file.filename):
         flash(f"Uploaded {file.filename}")
         filename = file.filename
-        timestamp = datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
+        timestamp = datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S.%f]")
         rules_file = os.path.join(application.config["RULES_FOLDER"], "policy.rego")
 
         # Save old rules policy
         os.rename(rules_file, rules_file + timestamp)
         file.save(os.path.join(application.config["RULES_FOLDER"], "policy.rego"))
-        return redirect(url_for("admin"))
+    return redirect(url_for("admin"))
 
 
-@application.route("/uploads/<name>")
-def download_file(name):
-    return send_from_directory(application.config["RULES_FOLDER"], name)
+@application.route("/admin/download_rules", methods=["POST"])
+def download_rules():
+    request_dict = request.form.to_dict(flat=True)
+    print(request_dict)
+    return send_from_directory(
+        application.config["RULES_FOLDER"], request_dict["filename"]
+    )
 
 
 if __name__ == "__main__":
