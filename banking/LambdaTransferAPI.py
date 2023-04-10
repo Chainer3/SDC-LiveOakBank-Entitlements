@@ -198,12 +198,16 @@ def handler(event, context):
     def get_transfers(payload, params):
         return ddb_scan("", transfersDB)
 
+    def accounts_list(payload, params):
+        return ddb_scan("", bankDB)
+
     operation = event["operation"]
 
     operations = {
         "accountCreate": account_create,
         "accountRead": account_read,
         "accountDelete": account_delete,
+        "accountsList": accounts_list,
         "transfer": transfer,
         "deposit": deposit,
         "getTransfers": get_transfers,
