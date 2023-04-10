@@ -549,6 +549,7 @@ def admin():
 
     if not "Admin" in roles:
         return "Admin access required"
+    return "Admin dashboard"
 
 
 if __name__ == "__main__":
