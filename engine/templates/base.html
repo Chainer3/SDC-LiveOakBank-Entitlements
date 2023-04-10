@@ -149,7 +149,12 @@
 						</svg></a>
 			</a>
 			<a href="/banking">Banking Forms</a> <a href="/roles">User Roles</a> <a href="/opa">OPA
-				decisions</a> <a href="/logout" id="qsLogoutBtn">Logout</a>
+				decisions</a>
+			{% if not session %}
+			<a href="/login" id="qsLoginBtn">Login</a>
+			{% else %}
+			<a href="/logout" id="qsLogoutBtn">Logout</a>
+			{% endif%}
 		</nav>
 		<hr>
 		<div class="content">{% block content %} {% endblock %}</div>
