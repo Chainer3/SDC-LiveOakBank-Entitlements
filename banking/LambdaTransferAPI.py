@@ -230,11 +230,11 @@ def handler(event, context):
     TESTING = False
     NOAUTH = False
     # TESTING mode checks entitlements but does not access production DB
-    if event["payload"].get("TESTING") == "true":
+    if event["payload"].get("TESTING") == True:
         print("TESTING Mode enabled for this request")
         TESTING = True
     # NOAUTH mode doesn't check entitlements and also does not access production DB
-    if event["payload"].get("NOAUTH") == "true":
+    if event["payload"].get("NOAUTH") == True:
         print("NOAUTH Mode enabled for this request")
         TESTING = True
         NOAUTH = True
