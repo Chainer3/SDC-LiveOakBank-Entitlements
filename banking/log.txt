@@ -1,0 +1,421 @@
+{
+    "FunctionName": "LambdaTransferAPI",
+    "FunctionArn": "arn:aws:lambda:us-east-1:442444038817:function:LambdaTransferAPI",
+    "Runtime": "python3.9",
+    "Role": "arn:aws:iam::442444038817:role/lambda-apigateway-role",
+    "Handler": "LambdaTransferAPI.handler",
+    "CodeSize": 953119,
+    "Description": "",
+    "Timeout": 3,
+    "MemorySize": 128,
+    "LastModified": "2023-04-10T23:23:00.000+0000",
+    "CodeSha256": "/IGBWvplb1SqKKVWHwMtC0kqJUSe81EP6RgP99AWp1c=",
+    "Version": "$LATEST",
+    "Environment": {
+        "Variables": {
+            "testing_mode": "False"
+        }
+    },
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "e3532cd3-5df9-4f41-b672-441010689316",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:edb5a058bfa782cb9cedc6d534ac8b8c193bc28e9a9879d9f5ebaaf619cd0fc0"
+    }
+}
+{
+    "FunctionName": "LambdaTransferAPI_test",
+    "FunctionArn": "arn:aws:lambda:us-east-1:442444038817:function:LambdaTransferAPI_test",
+    "Runtime": "python3.9",
+    "Role": "arn:aws:iam::442444038817:role/lambda-apigateway-role",
+    "Handler": "LambdaTransferAPI_test.handler",
+    "CodeSize": 953119,
+    "Description": "",
+    "Timeout": 3,
+    "MemorySize": 128,
+    "LastModified": "2023-04-10T23:23:01.000+0000",
+    "CodeSha256": "/IGBWvplb1SqKKVWHwMtC0kqJUSe81EP6RgP99AWp1c=",
+    "Version": "$LATEST",
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "157e726b-32dc-4bc5-8dc7-861d62b16d96",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:edb5a058bfa782cb9cedc6d534ac8b8c193bc28e9a9879d9f5ebaaf619cd0fc0"
+    }
+}
+{
+    "FunctionName": "LambdaTransferAPI",
+    "FunctionArn": "arn:aws:lambda:us-east-1:442444038817:function:LambdaTransferAPI",
+    "Runtime": "python3.9",
+    "Role": "arn:aws:iam::442444038817:role/lambda-apigateway-role",
+    "Handler": "LambdaTransferAPI.handler",
+    "CodeSize": 953352,
+    "Description": "",
+    "Timeout": 3,
+    "MemorySize": 128,
+    "LastModified": "2023-04-11T02:16:15.000+0000",
+    "CodeSha256": "zgZyqAXTivWIStO6Q7d5XEcnJzR5xuGjsEFnaoNHOMY=",
+    "Version": "$LATEST",
+    "Environment": {
+        "Variables": {
+            "ENVIRONMENT": "PRODUCTION",
+            "BANK_TABLE_NAME": "lambda-bank-table",
+            "TRANSFERS_TABLE_NAME": "lambda-transfers-table"
+        }
+    },
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "773df7ef-29c2-4a12-b89f-6b6139271435",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:edb5a058bfa782cb9cedc6d534ac8b8c193bc28e9a9879d9f5ebaaf619cd0fc0"
+    }
+}
+{
+    "FunctionName": "LambdaTransferAPI_test",
+    "FunctionArn": "arn:aws:lambda:us-east-1:442444038817:function:LambdaTransferAPI_test",
+    "Runtime": "python3.9",
+    "Role": "arn:aws:iam::442444038817:role/lambda-apigateway-role",
+    "Handler": "LambdaTransferAPI_test.handler",
+    "CodeSize": 953352,
+    "Description": "",
+    "Timeout": 3,
+    "MemorySize": 128,
+    "LastModified": "2023-04-11T02:16:16.000+0000",
+    "CodeSha256": "zgZyqAXTivWIStO6Q7d5XEcnJzR5xuGjsEFnaoNHOMY=",
+    "Version": "$LATEST",
+    "Environment": {
+        "Variables": {
+            "ENVIRONMENT": "TESTING",
+            "BANK_TABLE_NAME": "lambda-bank-table-dev",
+            "TRANSFERS_TABLE_NAME": "lambda-transfers-table-dev"
+        }
+    },
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "feb00d34-9644-46bb-a168-75013eaa5999",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:edb5a058bfa782cb9cedc6d534ac8b8c193bc28e9a9879d9f5ebaaf619cd0fc0"
+    }
+}
+{
+    "FunctionName": "LambdaTransferAPI",
+    "FunctionArn": "arn:aws:lambda:us-east-1:442444038817:function:LambdaTransferAPI",
+    "Runtime": "python3.9",
+    "Role": "arn:aws:iam::442444038817:role/lambda-apigateway-role",
+    "Handler": "LambdaTransferAPI.handler",
+    "CodeSize": 953349,
+    "Description": "",
+    "Timeout": 3,
+    "MemorySize": 128,
+    "LastModified": "2023-04-11T02:19:36.000+0000",
+    "CodeSha256": "ZFYDCsawpMv8YsgSBQ27c8zet6Io3XSetgxd5PuW1iA=",
+    "Version": "$LATEST",
+    "Environment": {
+        "Variables": {
+            "ENVIRONMENT": "PRODUCTION",
+            "BANK_TABLE_NAME": "lambda-bank-table",
+            "TRANSFERS_TABLE_NAME": "lambda-transfers-table"
+        }
+    },
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "5fb83b5a-340a-4080-81a8-6a9400d87ecd",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:edb5a058bfa782cb9cedc6d534ac8b8c193bc28e9a9879d9f5ebaaf619cd0fc0"
+    }
+}
+{
+    "FunctionName": "LambdaTransferAPI_test",
+    "FunctionArn": "arn:aws:lambda:us-east-1:442444038817:function:LambdaTransferAPI_test",
+    "Runtime": "python3.9",
+    "Role": "arn:aws:iam::442444038817:role/lambda-apigateway-role",
+    "Handler": "LambdaTransferAPI_test.handler",
+    "CodeSize": 953349,
+    "Description": "",
+    "Timeout": 3,
+    "MemorySize": 128,
+    "LastModified": "2023-04-11T02:19:37.000+0000",
+    "CodeSha256": "ZFYDCsawpMv8YsgSBQ27c8zet6Io3XSetgxd5PuW1iA=",
+    "Version": "$LATEST",
+    "Environment": {
+        "Variables": {
+            "ENVIRONMENT": "TESTING",
+            "BANK_TABLE_NAME": "lambda-bank-table-dev",
+            "TRANSFERS_TABLE_NAME": "lambda-transfers-table-dev"
+        }
+    },
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "f6f442e3-5182-4c1d-b098-223597487126",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:edb5a058bfa782cb9cedc6d534ac8b8c193bc28e9a9879d9f5ebaaf619cd0fc0"
+    }
+}
+{
+    "FunctionName": "LambdaTransferAPI",
+    "FunctionArn": "arn:aws:lambda:us-east-1:442444038817:function:LambdaTransferAPI",
+    "Runtime": "python3.9",
+    "Role": "arn:aws:iam::442444038817:role/lambda-apigateway-role",
+    "Handler": "LambdaTransferAPI.handler",
+    "CodeSize": 953348,
+    "Description": "",
+    "Timeout": 3,
+    "MemorySize": 128,
+    "LastModified": "2023-04-11T02:20:39.000+0000",
+    "CodeSha256": "3YhMY+5O81+mJpiulA4z4+/tF++1/0FL9hki6tCgY7w=",
+    "Version": "$LATEST",
+    "Environment": {
+        "Variables": {
+            "ENVIRONMENT": "PRODUCTION",
+            "BANK_TABLE_NAME": "lambda-bank-table",
+            "TRANSFERS_TABLE_NAME": "lambda-transfers-table"
+        }
+    },
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "e1c1c967-2132-4dca-88a5-d71177da285c",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:edb5a058bfa782cb9cedc6d534ac8b8c193bc28e9a9879d9f5ebaaf619cd0fc0"
+    }
+}
+{
+    "FunctionName": "LambdaTransferAPI_test",
+    "FunctionArn": "arn:aws:lambda:us-east-1:442444038817:function:LambdaTransferAPI_test",
+    "Runtime": "python3.9",
+    "Role": "arn:aws:iam::442444038817:role/lambda-apigateway-role",
+    "Handler": "LambdaTransferAPI_test.handler",
+    "CodeSize": 953348,
+    "Description": "",
+    "Timeout": 3,
+    "MemorySize": 128,
+    "LastModified": "2023-04-11T02:20:41.000+0000",
+    "CodeSha256": "3YhMY+5O81+mJpiulA4z4+/tF++1/0FL9hki6tCgY7w=",
+    "Version": "$LATEST",
+    "Environment": {
+        "Variables": {
+            "ENVIRONMENT": "TESTING",
+            "BANK_TABLE_NAME": "lambda-bank-table-dev",
+            "TRANSFERS_TABLE_NAME": "lambda-transfers-table-dev"
+        }
+    },
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "f11acdc8-447a-478c-ae87-b45b4a0bd347",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:edb5a058bfa782cb9cedc6d534ac8b8c193bc28e9a9879d9f5ebaaf619cd0fc0"
+    }
+}
+{
+    "FunctionName": "LambdaTransferAPI",
+    "FunctionArn": "arn:aws:lambda:us-east-1:442444038817:function:LambdaTransferAPI",
+    "Runtime": "python3.9",
+    "Role": "arn:aws:iam::442444038817:role/lambda-apigateway-role",
+    "Handler": "LambdaTransferAPI.handler",
+    "CodeSize": 953372,
+    "Description": "",
+    "Timeout": 3,
+    "MemorySize": 128,
+    "LastModified": "2023-04-11T02:34:29.000+0000",
+    "CodeSha256": "Q5NLFdUV7jAeKQlUe9jdQLgmSvJX9LyxBO7FH5fTIEs=",
+    "Version": "$LATEST",
+    "Environment": {
+        "Variables": {
+            "ENVIRONMENT": "PRODUCTION",
+            "BANK_TABLE_NAME": "lambda-bank-table",
+            "TRANSFERS_TABLE_NAME": "lambda-transfers-table"
+        }
+    },
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "fb3f5475-19e2-4f05-85fa-47f084d043e1",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:edb5a058bfa782cb9cedc6d534ac8b8c193bc28e9a9879d9f5ebaaf619cd0fc0"
+    }
+}
+{
+    "FunctionName": "LambdaTransferAPI_test",
+    "FunctionArn": "arn:aws:lambda:us-east-1:442444038817:function:LambdaTransferAPI_test",
+    "Runtime": "python3.9",
+    "Role": "arn:aws:iam::442444038817:role/lambda-apigateway-role",
+    "Handler": "LambdaTransferAPI_test.handler",
+    "CodeSize": 953372,
+    "Description": "",
+    "Timeout": 3,
+    "MemorySize": 128,
+    "LastModified": "2023-04-11T02:34:31.000+0000",
+    "CodeSha256": "Q5NLFdUV7jAeKQlUe9jdQLgmSvJX9LyxBO7FH5fTIEs=",
+    "Version": "$LATEST",
+    "Environment": {
+        "Variables": {
+            "ENVIRONMENT": "TESTING",
+            "BANK_TABLE_NAME": "lambda-bank-table-dev",
+            "TRANSFERS_TABLE_NAME": "lambda-transfers-table-dev"
+        }
+    },
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "0fff9a62-825d-464e-8ed9-b951aec108d6",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:edb5a058bfa782cb9cedc6d534ac8b8c193bc28e9a9879d9f5ebaaf619cd0fc0"
+    }
+}

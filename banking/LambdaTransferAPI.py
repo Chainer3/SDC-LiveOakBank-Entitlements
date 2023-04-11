@@ -4,17 +4,25 @@ import json
 from botocore.exceptions import ClientError
 from uuid import uuid4
 import requests
+import os
+
+ENVIRONMENT = os.environ["ENVIRONMENT"]
+BANK_TABLE_NAME = os.environ["BANK_TABLE_NAME"]
+TRANSFERS_TABLE_NAME = os.environ["TRANSFERS_TABLE_NAME"]
 
 # define the DynamoDB table that Lambda will connect to
 BANK_TABLE_NAME = "lambda-bank-data"
 TRANSFERS_TABLE_NAME = "lambda-transfers-table"
+
+BANK_TABLE_NAME_TEST = "lambda-bank-data-test"
+TRANSFERS_TABLE_NAME_TEST = "lambda-transfers-table-test"
+
 ENTITLEMENT_URL = "http://flask-env.eba-2vgd6nqw.us-east-1.elasticbeanstalk.com/"
 ENTITLEMENT_ENDPOINT = "/enginetesting"
 # ENTITLEMENT_URL = "http://flask-env.eba-2vgd6nqw.us-east-1.elasticbeanstalk.com/"
 
-# create the DynamoDB resource
-bankDB = boto3.resource("dynamodb").Table(BANK_TABLE_NAME)
-transfersDB = boto3.resource("dynamodb").Table(TRANSFERS_TABLE_NAME)
+bankDB = None
+transfersDB = None
 
 print("Loading function")
 
@@ -37,7 +45,7 @@ def handler(event, context):
     - payload: a JSON object containing parameters to pass to the
                operation being performed
     """
-
+    global bankDB, transfersDB
     ############################
     # DynamoDB CRUD operations #
     ############################
@@ -107,6 +115,7 @@ def handler(event, context):
         id = payload["accountId"]
         new_account["id"] = id
         new_account["balance"] = payload["balance"]
+
         # Create new account
         response = ddb_create(req, bankDB)
         if was_success(response):
@@ -218,14 +227,35 @@ def handler(event, context):
     print(f"received event {event}")
     print(f"context {context}")
 
-    # send request to entitlement engine
-    res = requests.post(ENTITLEMENT_URL + ENTITLEMENT_ENDPOINT, json=event)
-    print(f"result text {res.text}")
-    decision_result = json.loads(res.text)
-    decision = decision_result["result"]
-    print(f"Decision: {decision}")
-    if not decision is True:
-        raise ValueError("User is not entitled to their request!")
+    TESTING = False
+    NOAUTH = False
+    # TESTING mode checks entitlements but does not access production DB
+    if event["payload"].get("TESTING") == "true":
+        print("TESTING Mode enabled for this request")
+        TESTING = True
+    # NOAUTH mode doesn't check entitlements and also does not access production DB
+    if event["payload"].get("NOAUTH") == "true":
+        print("NOAUTH Mode enabled for this request")
+        TESTING = True
+        NOAUTH = True
+
+    # create the DynamoDB resources
+    if TESTING:
+        bankDB = boto3.resource("dynamodb").Table(BANK_TABLE_NAME_TEST)
+        transfersDB = boto3.resource("dynamodb").Table(TRANSFERS_TABLE_NAME_TEST)
+    else:
+        bankDB = boto3.resource("dynamodb").Table(BANK_TABLE_NAME)
+        transfersDB = boto3.resource("dynamodb").Table(TRANSFERS_TABLE_NAME)
+
+    if not NOAUTH:
+        # send request to entitlement engine
+        res = requests.post(ENTITLEMENT_URL + ENTITLEMENT_ENDPOINT, json=event)
+        print(f"result text {res.text}")
+        decision_result = json.loads(res.text)
+        decision = decision_result["result"]
+        print(f"Decision: {decision}")
+        if not decision is True:
+            raise ValueError("User is not entitled to their request!")
 
     if operation in operations:
         return operations[operation](event["payload"], event["params"])
