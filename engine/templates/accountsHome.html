@@ -28,7 +28,7 @@
   .logo-container {
     position: absolute;
     width: 20%;
-    height: 6%;
+    height: 8%;
     left: 2%;
     top: 25%;
   }
@@ -62,10 +62,10 @@
 
   .transfer-btn {
     position: absolute;
-    width: 324px;
-    height: 46px;
-    left: 50px;
-    top: 424px;
+    width: 40%;
+    height: 7.5%;
+    left: 30%;
+    top: 92%;
     background-color: #4700A4;
     border: 1.5px solid #9A9999;
     border-radius: 4px;
@@ -73,7 +73,9 @@
     color: #FFFFFF;
     font-size: 18px;
     font-weight: bold;
-    text-align: center;
+    
+   
+    
   }
 
   .accounts-container {
@@ -155,6 +157,10 @@
     opacity: 0.6;
     cursor: not-allowed;
   }
+
+  .right{
+    text-align: right;
+  }
 </style>
 <!-- <h1>{% block title %} Account Information {% endblock %}</h1> -->
 
@@ -163,11 +169,16 @@
     <h1>ACCOUNTS</h1>
     <div class="accounts-box-personal">
       {% for account in accounts %}
-      <p>{{account}}</p>
+      
+      <p style="text-align: left;  color: #240053; text-size-adjust: 80%; top: 10%;"> 
+        <b>Account ID: {{account.id}}</b>
+        <span style="float: right;  color: #4700A4;"><b> ${{account.balance}} </b></span>
+        <hr>
+      </p>
 
       {% endfor %}
     </div>
-    <a class="transfer-btn" href="/banking/transfer">TRANSFER</a>
+    <button class="transfer-btn" onclick="window.location.href='/banking/transfer';">TRANSFER</button>
   </div>
 </div>
 
