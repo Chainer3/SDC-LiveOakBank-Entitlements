@@ -232,7 +232,8 @@ def enginetesting():
 
             # Load a policy from the local file policy.rego
             client.update_opa_policy_fromfile(
-                os.path.join(application.config["RULES_FOLDER"], "policy.rego"),
+                os.path.join(
+                    application.config["RULES_FOLDER"], "policy.rego"),
                 "testpolicy",
             )
 
@@ -245,7 +246,8 @@ def enginetesting():
             user_id = id_data["sub"]
 
             # Make requests to OPA and return the decisions
-            roles = get_roles(user_id, input["input"]["payload"]["accessToken"])
+            roles = get_roles(
+                user_id, input["input"]["payload"]["accessToken"])
 
             roles = [role["name"].lower() for role in roles]
 
@@ -388,7 +390,8 @@ def createAccount():
             "balance": int(request_dict["balance"]),
         }
 
-        api_response = sendAPIRequest(req, ACCOUNT_ENDPOINT, "POST", with_tokens=True)
+        api_response = sendAPIRequest(
+            req, ACCOUNT_ENDPOINT, "POST", with_tokens=True)
 
         # return json.dumps(api_response)
         messages = [api_response]
@@ -608,11 +611,13 @@ def upload_rules():
         flash(f"Uploaded {file.filename}")
         filename = file.filename
         timestamp = datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S.%f]")
-        rules_file = os.path.join(application.config["RULES_FOLDER"], "policy.rego")
+        rules_file = os.path.join(
+            application.config["RULES_FOLDER"], "policy.rego")
 
         # Save old rules policy
         os.rename(rules_file, rules_file + timestamp)
-        file.save(os.path.join(application.config["RULES_FOLDER"], "policy.rego"))
+        file.save(os.path.join(
+            application.config["RULES_FOLDER"], "policy.rego"))
     return redirect(url_for("admin"))
 
 

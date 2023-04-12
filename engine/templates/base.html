@@ -206,9 +206,15 @@
 			</button>
 			<div class="dropdown-content">
 				<a href="/banking">Banking Forms</a> <a href="/roles">User Roles</a>
-				<a href="/opa">OPA decisions</a> {% if not session %}
-				<a href="/login" id="qsLoginBtn">Login</a> {% else %}
-				<a href="/logout" id="qsLogoutBtn">Logout</a> {% endif%}
+				<a href="/opa">OPA decisions</a>
+				{% if not session %}
+				<a href="/login" id="qsLoginBtn">Login</a>
+				{% else %}
+				<a href="/logout" id="qsLogoutBtn">Logout</a>
+				{% endif%}
+				{% if admin %}
+				<a href="/admin" id="qsAdminBtn">Admin</a>
+				{% endif %}
 			</div>
 		</div>
 	</div>
