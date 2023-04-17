@@ -1,8 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+
+    .popup-container {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    .popup {
+        width: 30%;
+        background: #fff;
+        position: relative;
+        border-radius: 6px;
+        text-align: center;
+        padding: 0 30px 30px;
+    }
+
+    .popup-button {
+        width: 95%;
+        margin-top: 75%;
+        font-family: 18px;
+        cursor: pointer;
+
+    }
+</style>
+
 <h1>{% block title %} Transfer Money {% endblock %}</h1>
 
-<form method="POST">
+<form method="POST" onsubmit="showPopup(event)">
     <!-- {{ form.csrf_token }} -->
     <p>
         {{ form.sourceId.label }}
@@ -57,14 +87,31 @@
     </ul>
     {% endif %}
 
-
     <p>
         <input type="submit">
     </p>
 
-    {% for message in messages %}
-    <p>{{message}}</p>
-    {% endfor %}
 </form>
+
+<div class="popup-container" id="popup-container">
+    <div class="popup">
+        <h2>Message</h2>
+        <p id="popup-message"></p>
+        <button class="popup-button" onclick="hidePopup()">Close</button>
+    </div>
+</div>
+
+<script>
+function showPopup(event) {
+    event.preventDefault();
+    var message = "Your transaction has been successfully processed.";
+    document.getElementById("popup-message").innerHTML = message;
+    document.getElementById("popup-container").style.display = "block";
+}
+
+function hidePopup() {
+    document.getElementById("popup-container").style.display = "none";
+}
+</script>
 
 {% endblock %}
