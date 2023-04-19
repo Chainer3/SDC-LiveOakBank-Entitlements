@@ -1,9 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
-
+<style>
+  .home-box {
+    inline-size: min-content;
+	box-sizing: border-box;
+	background: #FFFFFF;
+	border-style: groove;
+	border-width: thick;
+	outline: black;
+	outline-width: 2px;
+	word-break: break-all;
+	padding: 0px 0px 0px 10px;
+}
+</style>
 {% if session %} <h1>Welcome!!! {{session.userinfo.name}}!</h1>
-<div>
-  <pre>{{pretty}}</pre>
+<div class="row">
+  <div class="column"></div>
+  <div class="center-column">
+    <div class="home-box">
+      <pre>{{pretty}}</pre>
+    </div>
+  </div>
 </div>
 {% else %}
 <h1 id="profileDropDown">Welcome Guest</h1>

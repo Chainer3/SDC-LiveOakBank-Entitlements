@@ -16,48 +16,18 @@
 	{% endif %} -->
 {% block content %}
 <style>
-  .header-container {
-    position: absolute;
-    width: 100%;
-    height: 10%;
-    left: 0px;
-    top: 0px;
-    background: #FFFFFF;
+  .row {
+	display: flex;
   }
 
-  .logo-container {
-    position: absolute;
-    width: 20%;
-    height: 8%;
-    left: 2%;
-    top: 25%;
+  .column {
+	flex: 33%;
+	padding: 10px;
   }
 
-  .accounts-btn {
-    position: absolute;
-    width: 8%;
-    height: 40%;
-    left: 25%;
-    top: 32%;
-    background-color: #4700A4;
-    border: 1.5px solid #9A9999;
-    border-radius: 2px;
-    font-family: FS Koopman Medium, Helvetica, Arial, sans-serif;
-    font-size: 20px;
-    color: #FFFFFF;
-  }
-
-  .logout-btn {
-    position: absolute;
-    width: 8%;
-    height: 40%;
-    left: 90%;
-    top: 32%;
-    border: groove;
-    font-family: FS Koopman Medium, Helvetica, Arial, sans-serif;
-    font-size: 20px;
-    color: #4700A4;
-    background-color: #EBEBEB;
+  .center-column {
+	left: 30%;
+	flex: 34%;
   }
 
   .transfer-btn {
@@ -84,6 +54,15 @@
 
   }
 
+  .transfer-box {
+	box-sizing: border-box;
+	background: #FFFFFF;
+	border-style: groove;
+	border-radius: 2%;
+	border-width: thick;
+	outline: black;
+	outline-width: 2px;
+  }
   .accounts-box {
     position: absolute;
     box-sizing: border-box;
@@ -118,19 +97,8 @@
     /* background: #240053; */
   }
 
-  .accounts-box-managed {
-    position: relative;
-    width: 90%;
-    height: 6.5%;
-    top: 25%;
-    left: 5%;
-    font-family: FS Koopman Medium, Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    background: #240053;
-    color: #FFFFFF;
-  }
 
-  h1 {
+/*   h1 {
     position: relative;
     width: 428px;
     height: 31px;
@@ -147,8 +115,39 @@
     font-family: FS Koopman Medium, Helvetica, Arial, sans-serif;
     font-size: 24px;
     color: #FFFFFF;
-  }
+  } */
+  .tbox-contents {
+    width: 70%;
+    font-family: Helvetica;
+	color: #4700A4;
+	padding: 0px 0px 0px 70px;
+	font-size: 18px;
+	text-align: right;
+  } 
 
+  .tbox-footer {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    bottom: 0px;
+    padding-left: 41%;
+    padding-bottom: 12px;
+  }
+ 
+  .box-header {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 50px;
+    color: white;
+    background-color: #240053;
+    font-family: Verdana, sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    border-radius: 2%;
+  } 
   .disable {
     opacity: 0.6;
     cursor: not-allowed;
@@ -158,25 +157,29 @@
     text-align: right;
   }
 </style>
-<!-- <h1>{% block title %} Account Information {% endblock %}</h1> -->
-
-<div class="accounts-container">
-  <div class="accounts-box">
-    <h1>ACCOUNTS</h1>
-    <div class="accounts-box-personal">
-      {% for account in accounts %}
-
-      <p style="text-align: left;  color: #240053; text-size-adjust: 80%; top: 10%;">
-        <b>Account ID: {{account.id}}</b>
-        <span style="float: right;  color: #4700A4;"><b> ${{account.balance}} </b></span>
-        <hr>
-      </p>
-
-      {% endfor %}
+<h1>{% block title %} Account Information {% endblock %}</h1>
+<body>
+	<div class="row">
+	  <div class="column"></div>
+	  <div class="center-column">
+		<div class="transfer-box">
+		  <div class="box-header">Accounts</div>
+		    <div class="tbox-contents">
+              {% for account in accounts %}
+                <p style="text-align: left;  color: #240053; text-size-adjust: 80%; top: 5%;">
+                <b>Account ID: {{account.id}}</b>
+                <span style="float: right; color: #4700A4;"><b> ${{account.balance}} </b></span>
+                </p>
+                <hr>
+              {% endfor %}
+            </div>
+          <div class="tbox-footer">
+            <button class="submit-btn" onclick="window.location.href='/banking/transfer';">Transfer</button>
+          </div>
+        </div>
+      </div>
+      <div class="column"></div>
     </div>
-    <button class="transfer-btn" onclick="window.location.href='/banking/transfer';">TRANSFER</button>
-  </div>
-</div>
-
+</body>
 
 {% endblock %}
