@@ -124,12 +124,10 @@ h1 {
 				{% for message in messages %} 
 				    {% if "successfully" in message.message %}
 				        <script>alert("Transfer completed successfully!")</script>
-				    {% elif "not entitled" in message.message %}
-				        <script>alert("An error occurred while transferring money.")</script>
-				        window.location.reload(true);
+				    {% elif "not entitled" in message.errorMessage %}
+				        <script>alert("An error occurred while transferring money.")</script> 
 				    {% endif %}
 				{% endfor %}
-				
 				</form>
 			</div>
 			</div>
