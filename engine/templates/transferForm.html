@@ -152,4 +152,40 @@ h1 {
 	</div>
 </body>
 
+<<<<<<< HEAD
 {% endblock %}
+=======
+    {% if form.memo.errors %}
+    <ul class="errors">
+        {% for error in form.memo.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
+    <p>
+        <input type="submit">
+    </p>
+
+
+    {% for message in messages %}
+        <div class="popup-container">
+            <div class="popup">    
+                    {% if "successfully" in message.message %}
+                        <p>Transfer successful!</p>
+                    {% else %}
+                        <p>An error occurred while transferring money.</p>
+                    {% endif %}
+                <div class="ok-btn" onclick="document.querySelector('.popup-container').style.display='none'">OK</div>
+            </div>
+        </div>    
+    {% endfor %}
+      
+    
+</form>
+
+
+
+{% endblock %}
+>>>>>>> branch 'main' of https://github.ncsu.edu/engr-csc-sdc/2023SpringTeam13-Live-Oak-Bank.git
