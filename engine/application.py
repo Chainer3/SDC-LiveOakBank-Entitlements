@@ -558,12 +558,12 @@ def accountHistory(id):
 
     transfers = []
     for transfer in all_transfers:
-        if transfer["sourceId"] == id: #or transfer["destId"] == id:
+        if transfer["sourceId"] == id or transfer["destId"] == id:
             transfers.append((transfer))
 
     print(transfers)
 
-    return render_template("accountHistory.html", accountId=id, transfers=transfers)
+    return render_template("accountHistoryTest.html", accountId=id, transfers=transfers)
 
 
 def is_admin():
