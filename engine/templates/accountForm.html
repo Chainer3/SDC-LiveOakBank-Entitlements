@@ -64,16 +64,27 @@
 }
 
 .results-box {
+	box-sizing: border-box;
+	background: #FFFFFF;
+	border-style: groove;
+	border-radius: 2%;
+	border-width: thick;
+	outline: black;
+	outline-width: 2px;
+}
+
+.resultsBox-contents {
     width: 60%;
     height: flex;
     top: 20px;
     font-family: Helvetica;
 	color: #4700A4;
-	padding: 0px 0px 50px 50px;
+	padding: 0px 0px 0px 50px;
 	font-size: 20px;
 	text-align: right;
-	align-items: right;
+	align-items: center;
 }
+
 </style>
 
 <h1>{% block title %} Get Account {% endblock %}</h1>
@@ -100,9 +111,9 @@
                        {% endif %}
               </div>
               <div class="box-footer">
-                       <p>
-			             <button type="submit" class="submit-btn">Find Account</button>
-                       </p>
+                <p>
+                  <button type="submit" class="submit-btn">Find Account</button>
+                </p>
               </div>
           </div>
          </div>
@@ -113,7 +124,7 @@
 		<div class="center-column">
 		  <div class="results-box">
 		    <div class="accountBox-header">Search Results</div>
-	          <div class="accountBox-contents">           
+	          <div class="resultsBox-contents">           
                 {% for message in messages %}
                   <p><b>Account ID:</b> {{message.id}}</p> 
                   <hr>

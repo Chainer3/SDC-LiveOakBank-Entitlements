@@ -2,13 +2,35 @@
 
 <h1>{% block title %} Banking Forms Home Page {% endblock %}</h1>
 {% block content %}
-<ul>
-    <li><a href="/banking/transfer">transfer</a></li>
-    <li><a href="/banking/createaccount">create account</a></li>
-    <li><a href="/banking/getaccount">get account info</a></li>
-    <li><a href="/banking/deleteaccount">delete account</a></li>
-    <li><a href="/banking/deposit">deposit</a></li>
-    <li><a href="/banking/accounts">all accounts</a></li>
-    <li><a href="/banking/accounts/<accountId>">transfer history for account</a></li>
-</ul>
+<body>
+<div class="row">
+  <div class="column"></div>
+  <div class="center-column">
+  <ul>  <!-- style="text-align:center" -->
+    <li style="text-align:center"><a href="/banking/transfer">Transfer Money</a>
+      <hr>
+    </li>
+    <li><a href="/banking/createaccount">Create New Account</a>
+      <hr>
+    </li>    
+    <li><a href="/banking/getaccount">Get Account</a>
+      <hr>
+    </li>
+    <li><a href="/banking/deleteaccount">Delete Account</a>
+      <hr>
+    </li>
+    <li><a href="/banking/deposit">Deposit Money</a>
+      <hr>
+    </li>
+    <li><a href="/banking/accounts">All Accounts</a>
+      <hr>
+    </li>
+    <li><a href="/banking/accounthistory">Account Transfer History</a>
+      <hr>
+    </li>
+  </ul>
+  </div>
+  <div class="column"></div>
+</div>
+</body>
 {% endblock %}
