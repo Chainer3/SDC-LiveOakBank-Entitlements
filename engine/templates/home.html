@@ -13,17 +13,17 @@
 	padding: 0px 0px 0px 10px;
 }
 </style>
+<body>
 {% if session %} <h1>Welcome!!! {{session.userinfo.name}}!</h1>
 <div class="row">
-  <div class="column"></div>
-  <div class="center-column">
+  <div class="center-column" style="padding: 10px">
     <div class="home-box">
-      <pre>{{pretty}}</pre>
+      <pre style="word-break: break-all; word-wrap: break-word">{{pretty}}</pre>
     </div>
   </div>
 </div>
 {% else %}
 <h1 id="profileDropDown">Welcome Guest</h1>
 {% endif %}
-
+</body>
 {% endblock %}

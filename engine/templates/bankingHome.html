@@ -1,36 +1,65 @@
 {% extends 'base.html' %}
-
-<h1>{% block title %} Banking Forms Home Page {% endblock %}</h1>
 {% block content %}
+<style>
+.accountBox-contents {
+    width: 100%;
+    height: flex;
+    font-family: Helvetica;
+	font-weight: medium;
+	text-align: right;
+	overflow: visible;
+	overflow-wrap: break-word;
+}
+
+p {
+    font-size: 20px;
+    font-weight: medium;
+    text-align:center;
+}
+
+a {
+  color:#240053;
+}
+
+</style>
+
 <body>
-<div class="row">
-  <div class="column"></div>
-  <div class="center-column">
-  <ul>  <!-- style="text-align:center" -->
-    <li style="text-align:center"><a href="/banking/transfer">Transfer Money</a>
-      <hr>
-    </li>
-    <li><a href="/banking/createaccount">Create New Account</a>
-      <hr>
-    </li>    
-    <li><a href="/banking/getaccount">Get Account</a>
-      <hr>
-    </li>
-    <li><a href="/banking/deleteaccount">Delete Account</a>
-      <hr>
-    </li>
-    <li><a href="/banking/deposit">Deposit Money</a>
-      <hr>
-    </li>
-    <li><a href="/banking/accounts">All Accounts</a>
-      <hr>
-    </li>
-    <li><a href="/banking/accounts/<accountId>">Account Transfer History</a>
-      <hr>
-    </li>
-  </ul>
-  </div>
-  <div class="column"></div>
-</div>
+	<h1>{% block title %} Banking Home {% endblock %}</h1>
+	<div class="row">
+		<div class="column"></div>
+		<div class="center-column">
+			  <div class="accountBox-contents">
+				<p>
+				    <a href="/banking/transfer">Transfer Money</a>
+				</p>
+				<hr style="width: 50%">
+				<p>
+					<a href="/banking/createaccount">Create New Account</a>
+				</p>
+				<hr style="width: 50%">
+				<p>
+					<a href="/banking/getaccount">Get Account</a>
+				</p>
+				<hr style="width: 50%">
+				<p>
+					<a href="/banking/deleteaccount">Delete Account</a>
+				</p>
+				<hr style="width: 50%">
+				<p>
+					<a href="/banking/deposit">Deposit Money</a>
+				</p>
+				<hr style="width: 50%">
+				<p>
+					<a href="/banking/accounts">All Accounts</a>
+				</p>
+				<hr style="width: 50%">
+				<p>
+					<a href="/banking/accounts/<accountId>">Account Transfer
+						History</a>
+				</p>
+			</div>
+		</div>
+		<div class="column"></div>
+	</div>
 </body>
 {% endblock %}
