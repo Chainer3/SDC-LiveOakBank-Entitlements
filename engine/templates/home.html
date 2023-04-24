@@ -14,7 +14,8 @@
 }
 </style>
 <body>
-{% if session %} <h1>Welcome!!! {{session.userinfo.name}}!</h1>
+{% if session %} <h1>Welcome, {{session.userinfo.name}}!</h1>
+<!--
 <div class="row">
   <div class="center-column" style="padding: 10px">
     <div class="home-box">
@@ -22,8 +23,9 @@
     </div>
   </div>
 </div>
+-->
 {% else %}
-<h1 id="profileDropDown">Welcome Guest</h1>
+<h1 id="profileDropDown">Welcome, guest!</h1>
 {% endif %}
 </body>
 {% endblock %}
