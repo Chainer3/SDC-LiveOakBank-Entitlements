@@ -29,8 +29,7 @@ body, html {
 	width: 100%;
 	height: 60px;
 	vertical-align: middle;
-/* 	line-height: 60px;
- */	background: #FFFFFF;
+ 	background: #FFFFFF;
 }
 
 .accounts-btn {
@@ -73,6 +72,13 @@ nav {
 	font-family: FS Koopman Medium, Helvetica, Arial, sans-serif;
 }
 
+#logo {
+	position: absolute;
+	left: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
 .bar1, .bar2, .bar3 {
 	width: 25px;
 	height: 3px;
@@ -81,26 +87,29 @@ nav {
 }
 
 .dropbtn {
-	position: relative;
-	padding: 3px;
+			position: relative;
+			padding: 3px;
 	align-items: center;
 	border: none;
 	cursor: pointer;
 }
 
 .dropdown {
-	position: relative;
-	left: 65%;
+	position: absolute;
 	display: inline-block;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
 }
 
 .dropdown-content {
 	display: none;
-	position: relative;
+	position: absolute;
 	background-color: #4700A4;
 	min-width: 160px;
 	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 	z-index: 1;
+	right: 0;
 }
 
 .dropdown-content a {
@@ -156,7 +165,7 @@ h1 {
 <body>
 	<!-- HEADER -->
 	<div class="header-container">
-		<a href="/" style="position: absolute; top: 12px; padding-left: 10px"> 
+		<a href="/" id="logo"> 
 		<svg xmlns="http://www.w3.org/2000/svg" width="100%"
 				viewBox="0 0 950 135.101">
 				<g id="liveoak-primarylogo-full-color"
@@ -215,7 +224,7 @@ h1 {
 				</g>
 			</svg>
 		</a>
-		<div class="dropdown" style="padding: 15px 0px 0px 0px">
+		<div class="dropdown">
 			<button class="dropbtn">
 				<div class="bar1"></div>
 				<div class="bar2"></div>
