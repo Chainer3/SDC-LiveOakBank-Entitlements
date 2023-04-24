@@ -47,7 +47,7 @@
     height: flex;
     font-family: Helvetica;
 	color: #4700A4;
-	background-color: #F5FFFB;
+	background-color: #FFFFFF;
 	font-size: 18px;
 	font-weight: medium;
 	text-align: right;
@@ -65,9 +65,11 @@
 }
 
 p {
-  margin: 4px 0px 4px 0px;
-
+  margin: 4px 0px 4px 90px;
+  text-align:left;
+  align-items:center;
 }
+
 </style>
 <body>
     <!-- Search Box -->
@@ -79,14 +81,14 @@ p {
 		  <div class="accountBox-contents">
 		    {% for transfer in transfers %}
               <div class="row">
-                <div class="column" style="text-align:left; padding: 4px 10px 4px 90px">
+                <div class="column">
                   <p><b>Withdraw Account:</b>  {{transfer.sourceId}}</p>
                   <p><b>Deposit Account:</b>  {{transfer.destId}}</p>
                   <p><b>Amount:</b>  ${{transfer.amount}}</p>
                 </div>
-                <div class="column" style="text-align:left; padding: 4px 60px 4px 30px">
-                  <p><b>Memo:</b></p>
-                  <p style="font-size: 16px; word-break: break-word; word-wrap: break-word">{{transfer.memo}}</p>
+                <div class="column">
+                  <p style="margin: 4px 60px 4px 60px;"><b>Memo:</b></p>
+                  <p style="margin: 4px 60px 4px 60px;font-size: 15px; word-break: break-word; word-wrap: break-word">{{transfer.memo}}</p>
                 </div>
               </div>
               <hr style="width: 87%">

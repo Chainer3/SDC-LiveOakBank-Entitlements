@@ -54,7 +54,7 @@
 
   }
 
-  .transfer-box {
+  .accounts-box {
 	box-sizing: border-box;
 	background: #FFFFFF;
 	border-style: groove;
@@ -63,60 +63,8 @@
 	outline: black;
 	outline-width: 2px;
   }
-  .accounts-box {
-    position: absolute;
-    box-sizing: border-box;
-    background: #FFFFFF;
-    border-style: ridge;
-    border-radius: 2%;
-    border-width: thick;
-    outline: black;
-    outline-width: 2px;
-  }
 
-  /*   .accounts-box-title {
-    position: relative;
-    width: 428px;
-    height: 31px;
-    top: 2px;
-    font-family: FS Koopman Medium,Helvetica,Arial,sans-serif;
-    align-items: center;
-    text-align: center;
-    color: #240053;
-  } */
-
-  .accounts-box-personal {
-    position: relative;
-    width: 90%;
-    height: 6.5%;
-    top: 5%;
-    left: 5%;
-    border: none;
-    border-radius: 2px;
-    font-size: 16px;
-    /* background: #240053; */
-  }
-
-
-/*   h1 {
-    position: relative;
-    width: 428px;
-    height: 31px;
-    top: 2px;
-    font-family: FS Koopman Medium, Helvetica, Arial, sans-serif;
-    align-items: center;
-    text-align: center;
-    color: #240053;
-  }
-
-  h2 {
-    text-align: left;
-    padding: 2px 0px 0px 5px;
-    font-family: FS Koopman Medium, Helvetica, Arial, sans-serif;
-    font-size: 24px;
-    color: #FFFFFF;
-  } */
-  .tbox-contents {
+  .abox-contents {
     width: 70%;
     font-family: Helvetica;
 	color: #4700A4;
@@ -125,12 +73,12 @@
 	text-align: right;
   } 
 
-  .tbox-footer {
+  .abox-footer {
     position: relative;
     width: 100%;
     height: 30px;
     bottom: 0px;
-    padding-left: 41%;
+    text-align: center;
     padding-bottom: 12px;
   }
  
@@ -147,14 +95,11 @@
     font-size: 28px;
     font-weight: bold;
     border-radius: 2%;
-  } 
+  }
+
   .disable {
     opacity: 0.6;
     cursor: not-allowed;
-  }
-
-  .right {
-    text-align: right;
   }
 </style>
 <h1>{% block title %} Account Information {% endblock %}</h1>
@@ -162,9 +107,9 @@
 	<div class="row">
 	  <div class="column"></div>
 	  <div class="center-column">
-		<div class="transfer-box">
+		<div class="accounts-box">
 		  <div class="box-header">Accounts</div>
-		    <div class="tbox-contents">
+		    <div class="abox-contents">
               {% for account in accounts %}
                 <p style="text-align: left;  color: #240053; text-size-adjust: 80%; top: 5%;">
                 <b>Account ID: {{account.id}}</b>
@@ -173,7 +118,7 @@
                 <hr>
               {% endfor %}
             </div>
-          <div class="tbox-footer">
+          <div class="abox-footer">
             <button class="submit-btn" onclick="window.location.href='/banking/transfer';">Transfer</button>
           </div>
         </div>
