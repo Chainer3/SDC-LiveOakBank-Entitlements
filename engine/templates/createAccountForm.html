@@ -12,44 +12,106 @@
 	outline-width: 2px;
 }
 
+.row {
+	display: flex;
+}
+
+.column {
+	flex: 30%;
+	padding: 10px;
+}
+
+.center-column {
+    flex: 40%;
+    padding: 10px;
+}
+
+.account-box {
+	box-sizing: border-box;
+	background: #FFFFFF;
+	border-style: groove;
+	border-radius: 2%;
+	border-width: thick;
+	outline: black;
+	outline-width: 2px;
+	align-items: center;
+}
+
+.accountBox-header {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 50px;
+  color: white;
+  background-color: #240053;
+  font-family: Verdana, sans-serif;
+  font-size: 28px;
+  font-weight: bold;
+  border-radius: 2%;
+}
+
+.accountBox-contents {
+    width: 100%;
+    height: 100%;
+    font-family: Helvetica;
+	color: #4700A4;
+	font-size: 20px;
+	text-align: center;
+	align-items: center;
+}
+
+.box-footer {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    bottom: 20px;
+    text-align: center;
+}
+
+p{
+    font-size: 20px;
+}
+
 </style>
-<h1>{% block title %} Create a new Account {% endblock %}</h1>
 
-<form method="POST">
-    <!-- {{ form.csrf_token }} -->
-    <p>
-        {{ form.accountId.label }}
-        {{ form.accountId(size=20) }}
-    </p>
-
-    {% if form.accountId.errors %}
-    <ul class="errors">
-        {% for error in form.accountId.errors %}
-        <li>{{ error }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
-    <p>
-        {{ form.balance.label }}
-        {{ form.balance() }}
-    </p>
-
-    {% if form.balance.errors %}
-    <ul class="errors">
-        {% for error in form.balance.errors %}
-        <li>{{ error }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
-    <p>
-        <input type="submit">
-    </p>
-
-    {% for message in messages %}
-    <p>{{message}}</p>
-    {% endfor %}
-</form>
+<body>
+    <form method="POST">
+      <div class="row">
+        <div class="column"></div>
+          <div class="center-column">
+            <div class="account-box">
+              <div class="accountBox-header">Create a New Account</div>
+                <div class="accountBox-contents">
+                       <!-- {{ form.csrf_token }} -->
+                         <p><b>
+                           {{ form.accountId.label }}
+                           {{ form.accountId(size=20) }}
+                         </b></p>
+                         <p><b>
+                            {{ form.balance.label }}
+                            {{ form.balance() }}
+                        </b></p>
+  
+                         {% if form.accountId.errors %}
+                           <ul class="errors">
+                           {% for error in form.accountId.errors %}
+                             <li>{{ error }}</li>
+                           {% endfor %}
+                           </ul>
+                         {% endif %}
+                </div>
+                <div class="box-footer">
+                  <p>
+                    <button type="submit" class="submit-btn">Submit</button>
+                  </p>
+                </div>
+            </div>
+           </div>
+          <div class="column"></div>
+      </div>
+    </form>
+  </body>            
 
 {% endblock %}
