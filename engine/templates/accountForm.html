@@ -111,16 +111,23 @@ p{
                   <button type="submit" class="submit-btn">Find Account</button>
                 </p>
               </div>
+                {% for message in messages %}
+                  {% if "deleted" in message.message %}
+				    <script>alert("Account deleted successfully!")</script>
+				  {% elif "Failed" in message.errorMessage %}
+			        <script>alert("An error occurred while deleting account.")</script> 
+				  {% endif %}
+                {% endfor %}
           </div>
-         </div>
-        <div class="column"></div>
+        </div>
+      <div class="column"></div>
     </div>
 	<div class="row">
 	  <div class="column"></div>
 		<div class="center-column">
 		  <div class="results-box">
 		    <div class="accountBox-header">Results</div>
-	          <div class="resultsBox-contents">           
+	          <div class="resultsBox-contents">          
                 {% for message in messages %}
                   <p style="text-align:left-center"><b>Account ID:  </b> {{message.id}}</p> 
                   <hr style="width:70%">

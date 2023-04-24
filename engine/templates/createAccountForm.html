@@ -109,9 +109,9 @@ p{
                 </div>
 				{% for message in messages %} 
 				    {% if "successfully" in message.message %}
-				        <script>alert("Transfer completed successfully!")</script>
+				        <script>alert("Account successfully created!")</script>
 				    {% elif "not entitled" in message.errorMessage %}
-				        <script>alert("An error occurred while transferring money.")</script> 
+				        <script>alert("An error occurred while creating the account.")</script> 
 				    {% endif %}
 				{% endfor %}
             </div>
