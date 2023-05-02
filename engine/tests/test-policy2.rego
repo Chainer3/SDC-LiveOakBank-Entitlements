@@ -19,7 +19,7 @@ transfers {
 			input.method == "POST",
 			any([input.roles[_] == "Power of Attorney"]),
 			input.params.amount >= 0,
-			input.params.amount <= 5000,
+			input.params.amount <= 15000,
 		},
 		{input.method == "GET"},
 	]
